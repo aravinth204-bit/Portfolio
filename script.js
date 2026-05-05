@@ -1,21 +1,19 @@
-// High-Conversion Portfolio Interactions
+// Professional Portfolio Interactions
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Header Scroll Effect (Sticky and Blur)
+    // 1. Sticky Header Effect
     const header = document.getElementById('header');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
-            header.style.padding = '0.75rem 0';
-            header.style.background = 'rgba(3, 0, 20, 0.9)';
+            header.classList.add('scrolled');
         } else {
-            header.style.padding = '1.25rem 0';
-            header.style.background = 'rgba(3, 0, 20, 0.7)';
+            header.classList.remove('scrolled');
         }
     });
 
-    // 2. Reveal Animations on Scroll (Intersection Observer)
+    // 2. Intersection Observer for Reveal Animations
     const observerOptions = {
-        threshold: 0.1,
+        threshold: 0.15,
         rootMargin: '0px 0px -50px 0px'
     };
 
@@ -28,8 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, observerOptions);
 
-    document.querySelectorAll('.reveal').forEach(section => {
-        observer.observe(section);
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
     });
 
     // 3. Smooth Scroll with Offset for Fixed Header
@@ -41,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-                const headerOffset = 90;
+                const headerOffset = 80;
                 const elementPosition = targetElement.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -53,49 +51,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4. Premium Form Feedback (Simulation)
+    // 4. Form Submission Handling with Feedback
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const btn = contactForm.querySelector('.btn-submit');
-            const originalText = btn.innerHTML;
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
             
-            // Show loading state
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
-            btn.disabled = true;
-            btn.style.opacity = '0.8';
+            // Loading State
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
 
-            // Simulate API call to show conversion feedback
+            // Simulate form submission
             setTimeout(() => {
-                btn.innerHTML = '<i class="fas fa-check-circle"></i> Strategy Call Requested!';
-                btn.style.background = '#10b981'; // Success Green
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
+                submitBtn.style.background = '#10b981'; // Green for success
                 
-                // Clear form
                 contactForm.reset();
                 
-                // Show a success message alert (optional but good for UX)
-                // alert("Thanks! I'll get back to you within 24 hours to schedule your call.");
-
-                // Reset button after 4 seconds
+                // Reset button after 3 seconds
                 setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.background = 'var(--accent)';
-                    btn.disabled = false;
-                    btn.style.opacity = '1';
-                }, 4000);
-            }, 1800);
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.style.background = 'var(--accent)';
+                    submitBtn.disabled = false;
+                }, 3000);
+            }, 1500);
         });
     }
 
-    // 5. Hero Mouse Parallax (Subtle Premium Feel)
-    const visual = document.querySelector('.hero-visual');
-    if (visual && window.innerWidth > 992) {
-        window.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.pageX) / 40;
-            const y = (window.innerHeight / 2 - e.pageY) / 40;
-            visual.style.transform = `translateX(${x}px) translateY(${y}px)`;
+    // 5. Hero Button Click Tracking (Optional UX improvement)
+    document.querySelectorAll('.hero-btns .btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            console.log(`Action: ${btn.textContent} clicked`);
         });
-    }
+    });
 });
