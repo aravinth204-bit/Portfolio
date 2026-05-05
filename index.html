@@ -3,193 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aravinth S | Frontend Developer</title>
-    <meta name="description" content="Frontend Developer specializing in React, HTML, CSS, and JavaScript. Building fast, modern websites for businesses and startups.">
+    <title>Aravinth S | Premium Freelance Frontend Developer</title>
+    <meta name="description" content="Aravinth S - Expert Freelance Frontend Developer building high-performance, premium web experiences for modern brands and startups.">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Background Blobs -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
     <!-- Header -->
-    <header>
-        <nav>
-            <div class="logo">Aravinth<span>S</span></div>
-            <ul class="nav-links">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#services" class="nav-link">Services</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </nav>
+    <header id="header">
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">Aravinth<span>.S</span></a>
+                <ul class="nav-links">
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#services" class="nav-link">Expertise</a></li>
+                    <li><a href="#projects" class="nav-link">Work</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+                <a href="#contact" class="btn-hire">Work with me</a>
+            </nav>
+        </div>
     </header>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
-        <div class="hero-bg"></div>
-        <div class="hero-content">
-            <span class="hero-badge">Frontend Developer</span>
-            <h1>I build fast, modern websites for <span class="highlight">businesses and startups</span></h1>
-            <p class="hero-description">Transforming ideas into elegant, responsive, and high-performing web experiences. Let me help you create a stunning online presence.</p>
-            <div class="hero-buttons">
-                <a href="#projects" class="btn btn-primary">View Projects</a>
-                <a href="#contact" class="btn btn-secondary">Hire Me</a>
-            </div>
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-number">3+</span>
-                    <span class="stat-label">Projects Completed</span>
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="hero-tag">
+                        <i class="fas fa-bolt"></i> Available for New Projects
+                    </div>
+                    <h1>
+                        <span class="gradient-text">Building Premium</span><br>
+                        <span class="accent-text">Web Experiences</span><br>
+                        <span class="gradient-text">for Modern Brands.</span>
+                    </h1>
+                    <p class="hero-desc">
+                        I specialize in creating high-performance, visually stunning websites that turn visitors into loyal customers. Let's elevate your digital presence.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#projects" class="btn-main">
+                            View My Work <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#contact" class="btn-outline">Let's Talk</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <h3>10+</h3>
+                            <p>Projects Done</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>99%</h3>
+                            <p>Client Satisfaction</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>2+</h3>
+                            <p>Years Experience</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat">
-                    <span class="stat-number">1+</span>
-                    <span class="stat-label">Years Experience</span>
+                <div class="hero-visual">
+                    <div class="image-container">
+                        <img src="me.png" alt="Aravinth S - Freelance Developer">
+                    </div>
+                    <div class="floating-card card-1">
+                        <div class="contact-icon" style="background: var(--primary); color: white;">
+                            <i class="fab fa-react"></i>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.75rem; color: var(--text-muted);">Specialist in</p>
+                            <p style="font-weight: 700; font-size: 0.9rem;">React & Next.js</p>
+                        </div>
+                    </div>
+                    <div class="floating-card card-2">
+                        <p style="font-weight: 700; font-size: 1rem; margin-bottom: 0.25rem;">Freelance Expert</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Turning ideas into reality.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="services">
+    <section id="services" class="reveal">
         <div class="container">
-            <h2 class="section-title">My Services</h2>
-            <p class="section-subtitle">Professional web development solutions tailored to your needs</p>
+            <div class="section-header">
+                <span class="section-tag">Expertise</span>
+                <h2 class="section-title">How I Can Help You</h2>
+            </div>
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="fas fa-code"></i>
+                        <i class="fas fa-laptop-code"></i>
                     </div>
-                    <h3>Website Development</h3>
-                    <p>Custom websites built from scratch with modern technologies. Clean, semantic code that's easy to maintain and scale.</p>
+                    <h3>Web Development</h3>
+                    <p>Clean, efficient code using modern frameworks like React and Next.js to ensure your site is fast and scalable.</p>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="fas fa-paint-brush"></i>
+                        <i class="fas fa-swatchbook"></i>
                     </div>
-                    <h3>Landing Page Design</h3>
-                    <p>High-converting landing pages designed to capture leads and showcase your product or service effectively.</p>
+                    <h3>Premium UI/UX Design</h3>
+                    <p>Interfaces that aren't just beautiful, but intuitive and conversion-focused for your business goals.</p>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="fab fa-react"></i>
+                        <i class="fas fa-rocket"></i>
                     </div>
-                    <h3>React Web Applications</h3>
-                    <p>Dynamic, interactive web applications built with React. Fast, scalable, and user-friendly experiences.</p>
+                    <h3>Performance & SEO</h3>
+                    <p>Optimizing every line of code to rank higher on Google and load in the blink of an eye.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="projects">
+    <section id="projects" class="reveal">
         <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
-            <p class="section-subtitle">A selection of my recent work</p>
+            <div class="section-header">
+                <span class="section-tag">Featured Work</span>
+                <h2 class="section-title">Selected Projects</h2>
+            </div>
             <div class="projects-grid">
                 <!-- Project 1 -->
                 <div class="project-card">
-                    <div class="project-image">
-                        <img src="https://placehold.co/600x400/1a1a1a/007bff?text=Cricket+App" alt="Cricket App">
+                    <div class="project-img">
+                        <img src="https://images.unsplash.com/photo-1551288049-bbb6518149ad?auto=format&fit=crop&q=80&w=800" alt="Cricket App">
                         <div class="project-overlay">
-                            <a href="https://cricket-app-pied.vercel.app/" target="_blank" class="project-btn">Live Demo</a>
+                            <a href="https://cricket-app-pied.vercel.app/" target="_blank" class="btn-main">Live Demo</a>
                         </div>
                     </div>
-                    <div class="project-content">
-                        <h3>Cricket App</h3>
-                        <p>A real-time cricket score tracking application with live updates and scoreboards.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">React</span>
-                            <span class="tech-tag">Firebase</span>
-                            <span class="tech-tag">API</span>
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span class="tag">React</span>
+                            <span class="tag">Firebase</span>
                         </div>
+                        <h3>Cricket App</h3>
+                        <p>A real-time score tracking platform for sports enthusiasts.</p>
+                        <a href="#" class="btn-link">View Details <i class="fas fa-chevron-right"></i></a>
                     </div>
                 </div>
                 <!-- Project 2 -->
                 <div class="project-card">
-                    <div class="project-image">
-                        <img src="https://placehold.co/600x400/1a1a1a/00d4aa?text=Play+Infinity" alt="Play Infinity">
+                    <div class="project-img">
+                        <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&q=80&w=800" alt="Play Infinity">
                         <div class="project-overlay">
-                            <a href="https://play-infinity.vercel.app/" target="_blank" class="project-btn">Live Demo</a>
+                            <a href="https://play-infinity.vercel.app/" target="_blank" class="btn-main">Live Demo</a>
                         </div>
                     </div>
-                    <div class="project-content">
-                        <h3>Play Infinity</h3>
-                        <p>A gaming platform featuring interactive games with smooth animations and engaging gameplay.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">HTML5</span>
-                            <span class="tech-tag">Canvas</span>
-                            <span class="tech-tag">JavaScript</span>
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span class="tag">JS</span>
+                            <span class="tag">Canvas</span>
                         </div>
+                        <h3>Play Infinity</h3>
+                        <p>Interactive gaming experience with smooth web animations.</p>
+                        <a href="#" class="btn-link">View Details <i class="fas fa-chevron-right"></i></a>
                     </div>
                 </div>
                 <!-- Project 3 -->
                 <div class="project-card">
-                    <div class="project-image">
-                        <img src="https://placehold.co/600x400/1a1a1a/ff6b6b?text=Chicken+Shop" alt="Chicken Shop">
+                    <div class="project-img">
+                        <img src="https://images.unsplash.com/photo-1556742044-3c52d6e88c62?auto=format&fit=crop&q=80&w=800" alt="Chicken Shop">
                         <div class="project-overlay">
-                            <a href="https://chicken-shop-phi.vercel.app/" target="_blank" class="project-btn">Live Demo</a>
+                            <a href="https://chicken-shop-phi.vercel.app/" target="_blank" class="btn-main">Live Demo</a>
                         </div>
                     </div>
-                    <div class="project-content">
-                        <h3>Chicken Shop</h3>
-                        <p>E-commerce website with product catalog, shopping cart, and seamless checkout experience.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">React</span>
-                            <span class="tech-tag">CSS</span>
-                            <span class="tech-tag">JavaScript</span>
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span class="tag">E-commerce</span>
+                            <span class="tag">React</span>
                         </div>
+                        <h3>Chicken Shop</h3>
+                        <p>Modern e-commerce platform with a focus on user experience.</p>
+                        <a href="#" class="btn-link">View Details <i class="fas fa-chevron-right"></i></a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
+    <!-- Process Section -->
+    <section id="process" class="reveal">
         <div class="container">
-            <h2 class="section-title">Let's Work Together</h2>
-            <p class="section-subtitle">Available for freelance projects and full-time opportunities</p>
-            <div class="contact-content">
+            <div class="section-header">
+                <span class="section-tag">My Process</span>
+                <h2 class="section-title">How We'll Work</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3 style="color: var(--primary); font-size: 3rem; margin-bottom: 1rem;">01</h3>
+                    <h3>Strategy</h3>
+                    <p>We discuss your goals, target audience, and project requirements to build a solid foundation.</p>
+                </div>
+                <div class="service-card">
+                    <h3 style="color: var(--secondary); font-size: 3rem; margin-bottom: 1rem;">02</h3>
+                    <h3>Design</h3>
+                    <p>I create a premium design that reflects your brand and resonates with your users.</p>
+                </div>
+                <div class="service-card">
+                    <h3 style="color: var(--accent); font-size: 3rem; margin-bottom: 1rem;">03</h3>
+                    <h3>Launch</h3>
+                    <p>Development, testing, and deployment. I ensure everything is perfect for the big day.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="reveal">
+        <div class="container">
+            <div class="contact-grid">
                 <div class="contact-info">
-                    <div class="availability-badge">
-                        <span class="pulse"></span>
-                        Available for freelance work
-                    </div>
-                    <div class="contact-details">
+                    <span class="section-tag">Get in Touch</span>
+                    <h2 class="section-title" style="text-align: left; margin-bottom: 2rem;">Let's Build Something <span class="accent-text">Iconic.</span></h2>
+                    <p style="color: var(--text-muted); margin-bottom: 3rem;">Ready to start your next project? Drop me a message and let's make it happen.</p>
+                    
+                    <div class="contact-card">
                         <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>aravinth204@gmail.com</span>
+                            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="contact-text">
+                                <h4>Email</h4>
+                                <p>aravinth204@gmail.com</p>
+                            </div>
                         </div>
                         <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span>+91 8778017989</span>
+                            <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                            <div class="contact-text">
+                                <h4>Phone</h4>
+                                <p>+91 8778017989</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="contact-cta">
-                        <p>Have a project in mind? Let's create something amazing together.</p>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="fab fa-linkedin"></i></div>
+                            <div class="contact-text">
+                                <h4>LinkedIn</h4>
+                                <p>Aravinth S</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <form id="contact-form" class="contact-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <input type="text" id="name" placeholder="Your Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="email" placeholder="Your Email" required>
-                        </div>
+                    <div class="input-group">
+                        <label>Your Name</label>
+                        <input type="text" id="name" placeholder="John Doe" required>
                     </div>
-                    <div class="form-group">
-                        <input type="text" id="subject" placeholder="Project Subject" required>
+                    <div class="input-group">
+                        <label>Your Email</label>
+                        <input type="email" id="email" placeholder="john@example.com" required>
                     </div>
-                    <div class="form-group">
-                        <textarea id="message" rows="5" placeholder="Tell me about your project..." required></textarea>
+                    <div class="input-group">
+                        <label>Your Message</label>
+                        <textarea id="message" rows="6" placeholder="Tell me about your project..." required></textarea>
                     </div>
-                    <button type="submit" class="submit-btn">
-                        <span>Send Message</span>
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+                    <button type="submit" class="btn-submit">Send Message <i class="fas fa-paper-plane"></i></button>
                 </form>
             </div>
         </div>
@@ -197,12 +271,15 @@
 
     <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 Aravinth S. All rights reserved.</p>
-            <div class="social-links">
-                <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2026 Aravinth S. All rights reserved.</p>
+                <div class="socials">
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                </div>
             </div>
         </div>
     </footer>
