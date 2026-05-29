@@ -87,7 +87,7 @@ const projects = [
     solution: 'Developed a high-performance web store with 45-minute delivery tracking, peak hygiene branding, and seamless checkout.',
     result: 'Established as the leading fresh meat delivery platform in Erode with daily active orders.',
     tags: ['React', 'Node.js', 'MongoDB', 'E-Commerce', 'REST API'],
-    liveUrl: 'https://chicken-shop-phi.vercel.app/',
+    liveUrl: 'https://local-chicken-shop-app.vercel.app/',
   },
   {
     id: 'cricket',
