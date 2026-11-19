@@ -1,188 +1,361 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+const navLinks = [
+  { href: '#home', label: 'Home', id: 'home' },
+  { href: '#services', label: 'Services', id: 'services' },
+  { href: '#projects', label: 'Work', id: 'projects' },
+  { href: '#skills', label: 'Skills', id: 'skills' },
+  { href: '#about', label: 'About', id: 'about' },
+];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const menuButtonRef = useRef(null);
+  const mobileNavigationRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      setScrolled(window.scrollY > 32);
 
       const sections = ['home', 'services', 'projects', 'skills', 'about', 'contact'];
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i]);
-        if (el && window.scrollY >= el.offsetTop - 120) {
-          setActiveSection(sections[i]);
-          break;
+      let current = 'home';
+
+      sections.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el && window.scrollY >= el.offsetTop - 180) {
+          current = id;
         }
-      }
+      });
+
+      setActiveSection(current);
     };
-    window.addEventListener('scroll', handleScroll);
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { href: '#home', label: 'Home' },
-    { href: '#services', label: 'Services' },
-    { href: '#projects', label: 'Projects' },
-    { href: '#skills', label: 'Skills' },
-    { href: '#about', label: 'About' },
-  ];
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && menuOpen) {
+        setMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
 
-  const handleNavClick = (href) => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    mobileNavigationRef.current?.querySelector('a')?.focus();
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [menuOpen]);
+
+  const handleNavClick = (event, href) => {
+    event.preventDefault();
     setMenuOpen(false);
+
     const target = document.querySelector(href);
-    if (target) {
-      const offset = 72;
-      window.scrollTo({ top: target.offsetTop - offset, behavior: 'smooth' });
-    }
+    if (!target) return;
+
+    const top = target.offsetTop - 76;
+    window.scrollTo({
+      top: top,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    });
   };
 
   return (
-    <header id="header" style={{
-      position: 'fixed',
-      top: 0,
-      width: '100%',
-      zIndex: 1000,
-      padding: scrolled ? '0.75rem 0' : '1.25rem 0',
-      background: scrolled ? 'rgba(248,247,255,0.92)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(18px)' : 'none',
-      borderBottom: scrolled ? '1px solid rgba(99,102,241,0.1)' : '1px solid transparent',
-      transition: 'all 0.35s ease',
-      boxShadow: scrolled ? '0 4px 24px rgba(99,102,241,0.07)' : 'none',
-    }}>
+    <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       <div className="container">
-        <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          {/* Logo */}
-          <a href="#home" onClick={(e) => { e.preventDefault(); handleNavClick('#home'); }} style={{
-            fontSize: '1.45rem',
-            fontWeight: 900,
-            color: 'var(--text-primary)',
-            letterSpacing: '-0.04em',
-          }}>
-            Aravinth<span style={{ color: 'var(--accent)' }}>.</span>
+        <nav className="navbar" aria-label="Primary navigation">
+          <a
+            className="brand"
+            href="#home"
+            onClick={(event) => handleNavClick(event, '#home')}
+            aria-label="Aravinth, back to top"
+          >
+            ARAVINTH<span>.</span>S
           </a>
 
-          {/* Desktop Links */}
-          <ul style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }} className="desktop-nav">
-            {navLinks.map(link => (
-              <li key={link.href}>
+          <ul className="desktop-nav">
+            {navLinks.map((link) => (
+              <li key={link.id}>
                 <a
+                  className={activeSection === link.id ? 'nav-link active' : 'nav-link'}
                   href={link.href}
-                  onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
-                  style={{
-                    fontSize: '0.93rem',
-                    fontWeight: 600,
-                    color: activeSection === link.href.slice(1) ? 'var(--accent)' : 'var(--text-secondary)',
-                    transition: 'color 0.2s',
-                    position: 'relative',
-                    paddingBottom: '2px',
-                  }}
+                  onClick={(event) => handleNavClick(event, link.href)}
+                  aria-current={activeSection === link.id ? 'page' : undefined}
                 >
                   {link.label}
-                  {activeSection === link.href.slice(1) && (
-                    <span style={{
-                      position: 'absolute',
-                      bottom: -4,
-                      left: 0,
-                      right: 0,
-                      height: '2px',
-                      background: 'var(--accent)',
-                      borderRadius: '2px',
-                    }} />
-                  )}
                 </a>
               </li>
             ))}
           </ul>
 
-          {/* Hire Me Button */}
           <a
+            className="btn btn-primary nav-contact"
             href="#contact"
-            onClick={(e) => { e.preventDefault(); handleNavClick('#contact'); }}
-            className="btn btn-primary"
-            style={{ padding: '0.6rem 1.5rem', fontSize: '0.88rem' }}
+            onClick={(event) => handleNavClick(event, '#contact')}
           >
-            Hire Me 🚀
+            Let's talk
           </a>
 
-          {/* Mobile Hamburger */}
           <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="mobile-menu-btn"
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'none',
-              flexDirection: 'column',
-              gap: '5px',
-              padding: '4px',
-            }}
-            aria-label="Toggle menu"
+            ref={menuButtonRef}
+            className="mobile-menu-button"
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
           >
-            {[0, 1, 2].map(i => (
-              <span key={i} style={{
-                display: 'block',
-                width: 24,
-                height: 2.5,
-                background: 'var(--text-primary)',
-                borderRadius: 2,
-                transition: 'all 0.3s',
-                transform: menuOpen
-                  ? i === 0 ? 'translateY(7.5px) rotate(45deg)'
-                  : i === 1 ? 'scaleX(0)'
-                  : 'translateY(-7.5px) rotate(-45deg)'
-                  : 'none',
-              }} />
-            ))}
+            <span />
+            <span />
           </button>
         </nav>
 
-        {/* Mobile Menu */}
-        {menuOpen && (
-          <div style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            background: 'rgba(248,247,255,0.97)',
-            backdropFilter: 'blur(20px)',
-            borderBottom: '1px solid var(--border)',
-            padding: '1.5rem 2rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1.5rem',
-            boxShadow: 'var(--shadow-md)',
-          }}>
-            {navLinks.map(link => (
+        <div
+          ref={mobileNavigationRef}
+          id="mobile-navigation"
+          className={`mobile-navigation${menuOpen ? ' open' : ''}`}
+          aria-hidden={!menuOpen}
+        >
+          <div className="mobile-navigation-inner">
+            {navLinks.map((link) => (
               <a
-                key={link.href}
+                key={link.id}
+                className={activeSection === link.id ? 'mobile-nav-link active' : 'mobile-nav-link'}
                 href={link.href}
-                onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
-                style={{
-                  fontSize: '1.1rem',
-                  fontWeight: 700,
-                  color: activeSection === link.href.slice(1) ? 'var(--accent)' : 'var(--text-primary)',
-                }}
+                onClick={(event) => handleNavClick(event, link.href)}
+                tabIndex={menuOpen ? 0 : -1}
+                aria-current={activeSection === link.id ? 'page' : undefined}
               >
                 {link.label}
               </a>
             ))}
-            <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('#contact'); }}
-              className="btn btn-primary" style={{ textAlign: 'center' }}>
-              Hire Me 🚀
+            <a
+              className="btn btn-primary mobile-contact"
+              href="#contact"
+              onClick={(event) => handleNavClick(event, '#contact')}
+              tabIndex={menuOpen ? 0 : -1}
+            >
+              Let's talk
             </a>
           </div>
-        )}
+        </div>
       </div>
 
       <style>{`
+        .skip-link {
+          position: fixed;
+          z-index: 2000;
+          top: 0.75rem;
+          left: 1rem;
+          transform: translateY(-160%);
+          border: 1px solid var(--border-strong);
+          border-radius: 4px;
+          background: var(--soft-white);
+          padding: 0.65rem 0.9rem;
+          color: var(--midnight);
+          font-size: 0.82rem;
+          font-weight: 800;
+          transition: transform var(--transition);
+        }
+
+        .skip-link:focus {
+          transform: translateY(0);
+        }
+
+        .site-header {
+          position: fixed;
+          inset: 0 0 auto;
+          z-index: 1000;
+          height: var(--nav-height);
+          border-bottom: 1px solid transparent;
+          transition:
+            background var(--transition),
+            border-color var(--transition),
+            backdrop-filter var(--transition);
+        }
+
+        .site-header.is-scrolled {
+          background: rgba(9, 10, 13, 0.88);
+          border-bottom-color: var(--border);
+          backdrop-filter: blur(18px);
+        }
+
+        .navbar {
+          height: var(--nav-height);
+          display: grid;
+          grid-template-columns: auto 1fr auto;
+          align-items: center;
+          gap: 2.5rem;
+        }
+
+        .brand {
+          color: var(--soft-white);
+          font-family: 'Space Grotesk', 'Manrope', sans-serif;
+          font-size: 1.05rem;
+          font-weight: 700;
+          letter-spacing: -0.04em;
+        }
+
+        .brand span {
+          color: var(--accent);
+        }
+
+        .desktop-nav {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 2.1rem;
+        }
+
+        .nav-link {
+          position: relative;
+          display: inline-flex;
+          height: var(--nav-height);
+          align-items: center;
+          color: var(--muted-text);
+          font-size: 0.84rem;
+          font-weight: 700;
+          transition: color var(--transition);
+        }
+
+        .nav-link::after {
+          content: '';
+          position: absolute;
+          right: 0;
+          bottom: 18px;
+          left: 0;
+          height: 2px;
+          background: var(--accent);
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform var(--transition);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+          color: var(--soft-white);
+        }
+
+        .nav-link.active::after {
+          transform: scaleX(1);
+        }
+
+        .nav-contact {
+          min-height: 42px;
+          padding-inline: 1.1rem;
+          font-size: 0.82rem;
+        }
+
+        .mobile-menu-button,
+        .mobile-navigation {
+          display: none;
+        }
+
         @media (max-width: 768px) {
-          .desktop-nav { display: none !important; }
-          .mobile-menu-btn { display: flex !important; }
-          header > .container > nav > a.btn { display: none; }
+          .navbar {
+            grid-template-columns: 1fr auto;
+          }
+
+          .desktop-nav,
+          .nav-contact {
+            display: none;
+          }
+
+          .mobile-menu-button {
+            display: flex;
+            width: 44px;
+            height: 44px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--charcoal);
+            color: var(--soft-white);
+          }
+
+          .mobile-menu-button span {
+            width: 18px;
+            height: 1.5px;
+            background: currentColor;
+            transition: transform var(--transition);
+          }
+
+          .mobile-menu-button[aria-expanded='true'] span:first-child {
+            transform: translateY(4.25px) rotate(45deg);
+          }
+
+          .mobile-menu-button[aria-expanded='true'] span:last-child {
+            transform: translateY(-4.25px) rotate(-45deg);
+          }
+
+          .mobile-navigation {
+            position: fixed;
+            z-index: -1;
+            inset: var(--nav-height) 0 0;
+            display: block;
+            visibility: hidden;
+            background: rgba(9, 10, 13, 0.98);
+            opacity: 0;
+            transition:
+              opacity var(--transition),
+              visibility var(--transition);
+          }
+
+          .mobile-navigation.open {
+            visibility: visible;
+            opacity: 1;
+          }
+
+          .mobile-navigation-inner {
+            display: flex;
+            width: calc(100% - 2rem);
+            max-width: 1180px;
+            height: 100%;
+            margin-inline: auto;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+            padding: 2.25rem 0;
+          }
+
+          .mobile-nav-link {
+            width: 100%;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            color: var(--muted-text);
+            font-family: 'Space Grotesk', 'Manrope', sans-serif;
+            font-size: clamp(1.8rem, 9vw, 2.8rem);
+            font-weight: 600;
+            letter-spacing: -0.05em;
+          }
+
+          .mobile-nav-link.active {
+            color: var(--accent);
+          }
+
+          .mobile-contact {
+            width: 100%;
+            margin-top: 1.5rem;
+          }
         }
       `}</style>
     </header>

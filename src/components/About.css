@@ -1,0 +1,133 @@
+.about-section {
+  background: var(--charcoal);
+}
+
+.about-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.78fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(3rem, 8vw, 8rem);
+}
+
+.about-portrait {
+  position: relative;
+  max-width: 470px;
+  margin: 0;
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.about-portrait::before {
+  position: absolute;
+  z-index: 0;
+  top: -0.75rem;
+  left: -0.75rem;
+  width: 40%;
+  height: 40%;
+  border-top: 1px solid var(--accent);
+  border-left: 1px solid var(--accent);
+  content: '';
+}
+
+.about-portrait img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: top center;
+  filter: saturate(0.82);
+}
+
+.about-portrait figcaption {
+  padding: 0.8rem 0;
+  color: var(--muted-text);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.about-copy {
+  max-width: 43rem;
+}
+
+.about-copy .section-heading {
+  max-width: 42rem;
+  margin-bottom: 1.4rem;
+  font-size: clamp(2.15rem, 4vw, 3.45rem);
+  line-height: 1.08;
+}
+
+.about-copy > p {
+  max-width: 38rem;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.94rem;
+  line-height: 1.8;
+}
+
+.about-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+  margin: 1.8rem 0 2rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.1rem 0;
+}
+
+.about-details dt {
+  color: var(--muted-text);
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.about-details dd {
+  margin-top: 0.25rem;
+  color: var(--soft-white);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.about-contact {
+  width: fit-content;
+}
+
+.about-contact svg {
+  transition: transform var(--transition);
+}
+
+.about-contact:hover svg {
+  transform: translateX(3px);
+}
+
+@media (max-width: 800px) {
+  .about-layout {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .about-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .about-portrait {
+    width: min(100%, 430px);
+  }
+
+}
+
+@media (max-width: 400px) {
+  .about-details {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-contact svg {
+    transition: none;
+  }
+}

@@ -148,7 +148,7 @@ export default function Contact() {
             </p>
 
             {/* Contact links */}
-            <div style={{ display: 'grid', gap: '1rem' }}>
+            <div className="contact-links" style={{ display: 'grid', gap: '1rem' }}>
               {contactLinks.map(c => (
                 <a
                   key={c.label}
@@ -316,6 +316,8 @@ export default function Contact() {
         @keyframes spin { to { transform: rotate(360deg); } }
         @media (max-width: 768px) {
           #contact .container > div { grid-template-columns: 1fr !important; gap: 3rem !important; }
+          #contact .container > div > .reveal { min-width: 0; }
+          #contact .contact-links > a { min-width: 0; }
           #contact form > div:first-child { grid-template-columns: 1fr !important; }
         }
       `}</style>

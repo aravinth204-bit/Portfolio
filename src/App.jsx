@@ -1,4 +1,6 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './index.css';
 
 import Navbar from './components/Navbar';
@@ -12,38 +14,40 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function App() {
-  // Scroll reveal
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.05, rootMargin: '0px 0px 0px 0px' }
-    );
+  useLayoutEffect(() => {
+    const media = gsap.matchMedia();
 
-    // Small delay so all child components are mounted
-    const timer = setTimeout(() => {
-      const revealEls = document.querySelectorAll('.reveal');
-      revealEls.forEach(el => observer.observe(el));
-    }, 100);
+    media.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.utils.toArray('.reveal').forEach((element) => {
+        gsap.fromTo(
+          element,
+          { autoAlpha: 0, y: 22 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.72,
+            ease: 'power3.out',
+            onComplete: () => element.classList.add('visible'),
+            scrollTrigger: {
+              trigger: element,
+              start: 'top 88%',
+              once: true,
+            },
+          },
+        );
+      });
+    });
 
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-    };
+    return () => media.revert();
   }, []);
-
 
   return (
     <>
       <Navbar />
-      <main>
+      <main id="main-content" tabIndex="-1">
         <Hero />
         <Services />
         <Projects />
