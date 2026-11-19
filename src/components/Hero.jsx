@@ -28,83 +28,71 @@ export default function Hero({ introReady }) {
     const root = heroRef.current;
     if (!root) return undefined;
 
-    const media = gsap.matchMedia(root);
-    media.add(
-      {
-        reduce: '(prefers-reduced-motion: reduce)',
+    const availability = root.querySelector('.availability');
+    const characters = root.querySelectorAll('.hero-heading-char-inner');
+    const description = root.querySelector('.hero-description');
+    const actions = root.querySelector('.hero-actions');
+    const tech = root.querySelector('.hero-tech');
+    const entranceTargets = [availability, ...characters, description, actions, tech].filter(Boolean);
+
+    // Explicit initial state
+    gsap.set(availability, { autoAlpha: 0, y: 16 });
+    gsap.set(characters, { 
+      autoAlpha: 0, 
+      yPercent: 125, 
+      rotateX: -25,
+      transformOrigin: '50% 100%' 
+    });
+    gsap.set(description, { autoAlpha: 0, y: 16 });
+    gsap.set(actions, { autoAlpha: 0, y: 14 });
+    gsap.set(tech, { autoAlpha: 0, y: 12 });
+
+    const timeline = gsap.timeline({
+      delay: 0.1,
+      defaults: { ease: 'power3.out' },
+      onComplete: () => {
+        gsap.set(entranceTargets, { clearProps: 'all' });
       },
-      ({ conditions }) => {
-        if (conditions.reduce) return undefined;
+    });
 
-        const availability = root.querySelector('.availability');
-        const characters = root.querySelectorAll('.hero-heading-char-inner');
-        const description = root.querySelector('.hero-description');
-        const actions = root.querySelector('.hero-actions');
-        const tech = root.querySelector('.hero-tech');
-        const entranceTargets = [availability, ...characters, description, actions, tech].filter(Boolean);
+    timeline
+      .to(availability, { autoAlpha: 1, y: 0, duration: 0.45 })
+      .to(characters, {
+        autoAlpha: 1,
+        yPercent: 0,
+        rotateX: 0,
+        duration: 0.95,
+        stagger: 0.022,
+        ease: 'power4.out',
+      }, '-=0.15')
+      .to(description, { autoAlpha: 1, y: 0, duration: 0.52 }, '-=0.35')
+      .to(actions, { autoAlpha: 1, y: 0, duration: 0.48 }, '-=0.25')
+      .to(tech, { autoAlpha: 1, y: 0, duration: 0.46 }, '-=0.22');
 
-        // Explicit initial state
-        gsap.set(availability, { autoAlpha: 0, y: 16 });
-        gsap.set(characters, { 
-          autoAlpha: 0, 
-          yPercent: 125, 
-          rotateX: -25,
-          transformOrigin: '50% 100%' 
-        });
-        gsap.set(description, { autoAlpha: 0, y: 16 });
-        gsap.set(actions, { autoAlpha: 0, y: 14 });
-        gsap.set(tech, { autoAlpha: 0, y: 12 });
+    const isDesktop = window.matchMedia('(min-width: 801px)').matches;
+    if (isDesktop) {
+      gsap.to(root.querySelector('.hero-glow'), {
+        x: 20,
+        duration: 12,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+      gsap.to(root.querySelector('.hero-copy'), {
+        yPercent: -10,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: root,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.65,
+        },
+      });
+    }
 
-        const timeline = gsap.timeline({
-          delay: 0.15,
-          defaults: { ease: 'power3.out' },
-          onComplete: () => {
-            gsap.set(entranceTargets, { clearProps: 'all' });
-          },
-        });
-
-        timeline
-          .to(availability, { autoAlpha: 1, y: 0, duration: 0.45 })
-          .to(characters, {
-            autoAlpha: 1,
-            yPercent: 0,
-            rotateX: 0,
-            duration: 0.95,
-            stagger: 0.022,
-            ease: 'power4.out',
-          }, '-=0.15')
-          .to(description, { autoAlpha: 1, y: 0, duration: 0.52 }, '-=0.35')
-          .to(actions, { autoAlpha: 1, y: 0, duration: 0.48 }, '-=0.25')
-          .to(tech, { autoAlpha: 1, y: 0, duration: 0.46 }, '-=0.22');
-
-        const isDesktop = window.matchMedia('(min-width: 801px)').matches;
-        if (isDesktop) {
-          gsap.to(root.querySelector('.hero-glow'), {
-            x: 20,
-            duration: 12,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-          });
-          gsap.to(root.querySelector('.hero-copy'), {
-            yPercent: -10,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: root,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: 0.65,
-            },
-          });
-        }
-
-        return () => {
-          timeline.kill();
-        };
-      },
-    );
-
-    return () => media.revert();
+    return () => {
+      timeline.kill();
+    };
   }, [introReady]);
 
   const scrollTo = (id) => {
