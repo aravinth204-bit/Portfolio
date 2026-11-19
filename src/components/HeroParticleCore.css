@@ -1,0 +1,100 @@
+.particle-core-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  height: 480px;
+  margin: 0 auto;
+  border-radius: 20px;
+  background: radial-gradient(circle at center, rgba(255, 113, 56, 0.08) 0%, rgba(9, 10, 13, 0.4) 70%);
+  border: 1px solid rgba(255, 113, 56, 0.15);
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(255, 113, 56, 0.07);
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: grab;
+}
+
+.particle-core-wrapper:active {
+  cursor: grabbing;
+}
+
+.particle-core-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Cybernetic HUD elements */
+.particle-core-hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--muted-text);
+  letter-spacing: 0.05em;
+}
+
+.hud-badge {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 17, 23, 0.65);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 113, 56, 0.22);
+  color: var(--soft-white);
+}
+
+.hud-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.hud-coord {
+  position: absolute;
+  color: rgba(245, 245, 245, 0.45);
+}
+
+.hud-specs {
+  position: absolute;
+  color: rgba(255, 113, 56, 0.85);
+}
+
+.top-left {
+  top: 16px;
+  left: 18px;
+}
+
+.top-right {
+  top: 20px;
+  right: 18px;
+}
+
+.bottom-left {
+  bottom: 20px;
+  left: 18px;
+}
+
+.bottom-right {
+  bottom: 16px;
+  right: 18px;
+}
+
+@media (max-width: 600px) {
+  .particle-core-wrapper {
+    height: 380px;
+  }
+  .hud-coord, .hud-specs {
+    display: none;
+  }
+}

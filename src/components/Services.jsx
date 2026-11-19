@@ -1,20 +1,20 @@
 import './Services.css';
 
-const services = [
+const capabilities = [
   {
-    title: 'Frontend development',
-    description: 'Clean, maintainable interfaces built with React and modern JavaScript, with attention to load time and browser support.',
-    focus: 'React, JavaScript, Vite',
+    title: 'Frontend Architecture & Engineering',
+    description: 'Clean, scalable, and type-safe user interfaces built with React 19, Vite, and modern JavaScript, with obsessive attention to 60 FPS performance and accessibility.',
+    focus: 'React 19, TypeScript, Vite, Component Systems',
   },
   {
-    title: 'Landing pages',
-    description: 'Responsive pages that bring a product or service into focus and give visitors a clear next step.',
-    focus: 'Interface design, responsive layouts',
+    title: 'Creative Motion & Interactive Experiences',
+    description: 'Awwwards-grade kinetic web animations, micro-interactions, and 3D WebGL scenes using GSAP ScrollTrigger and Three.js.',
+    focus: 'GSAP Motion, Three.js, Canvas Physics, Kinetic Typography',
   },
   {
-    title: 'Website redesign',
-    description: 'A considered update to an existing website’s structure, visual language and day-to-day usability.',
-    focus: 'Visual systems, usability, performance',
+    title: 'Full-Stack & Web Performance',
+    description: 'End-to-end full stack integration, RESTful APIs with Node.js & MongoDB, secure authentication, and rigorous core web vital optimization.',
+    focus: 'Node.js, Express, MongoDB, REST APIs, Lighthouse 95+',
   },
 ];
 
@@ -25,24 +25,24 @@ export default function Services() {
       <div className="container">
         <div className="services-layout">
           <div className="services-intro reveal">
-            <span className="section-tag">Services</span>
-            <h2 className="section-heading">Thoughtful work, from first screen to final detail.</h2>
+            <span className="section-tag">Core Capabilities</span>
+            <h2 className="section-heading">Engineering &amp; Architecture.</h2>
             <p className="section-sub">
-              Frontend development for useful, clear and carefully made digital experiences.
+              Crafting robust, high-performance web products — from creative motion to rock-solid full-stack code.
             </p>
           </div>
 
           <div className="services-list">
-            {services.map((service) => (
+            {capabilities.map((item) => (
               <article
                 className="service-row reveal"
-                key={service.title}
+                key={item.title}
               >
                 <span className="service-rule" aria-hidden="true" />
                 <div className="service-copy">
-                  <h3>{service.title}</h3>
-                  <p>{service.description}</p>
-                  <span className="service-focus">{service.focus}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                  <span className="service-focus">{item.focus}</span>
                 </div>
               </article>
             ))}
