@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function HeroBackgroundParticles() {
   const canvasRef = useRef(null);
@@ -15,14 +15,14 @@ export default function HeroBackgroundParticles() {
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
+      initParticles();
     };
     window.addEventListener('resize', handleResize);
 
-    // Mouse coordinates (scaled to window)
     const mouse = {
       x: -1000,
       y: -1000,
-      radius: 140, // Interaction radius
+      radius: 130, // Repulsion area
     };
 
     const handleMouseMove = (e) => {
@@ -38,99 +38,112 @@ export default function HeroBackgroundParticles() {
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseleave', handleMouseLeave);
 
-    // Create particles
-    const particleCount = Math.min(width > 768 ? 160 : 80, 200);
-    const particles = [];
+    let particles = [];
 
-    for (let i = 0; i < particleCount; i++) {
-      const x = Math.random() * width;
-      const y = Math.random() * height;
-      particles.push({
-        x: x,
-        y: y,
-        originX: x,
-        originY: y,
-        size: Math.random() * 2.5 + 1.2,
-        color: Math.random() > 0.4 ? '#FF7138' : '#FF895D',
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        density: Math.random() * 25 + 15,
-        alpha: Math.random() * 0.5 + 0.4,
-      });
+    const img = new Image();
+    img.src = '/me.png';
+
+    const initParticles = () => {
+      if (!img.complete || img.naturalWidth === 0) return;
+
+      const offCanvas = document.createElement('canvas');
+      const offCtx = offCanvas.getContext('2d');
+      const imgW = img.naturalWidth;
+      const imgH = img.naturalHeight;
+
+      offCanvas.width = imgW;
+      offCanvas.height = imgH;
+      offCtx.drawImage(img, 0, 0);
+
+      const imgData = offCtx.getImageData(0, 0, imgW, imgH).data;
+      particles = [];
+
+      // Scale portrait in hero section
+      const isMobile = width < 768;
+      const targetHeight = Math.min(height * 0.72, isMobile ? 380 : 520);
+      const scale = targetHeight / imgH;
+      const targetWidth = imgW * scale;
+
+      const offsetX = (width - targetWidth) / 2;
+      const offsetY = (height - targetHeight) / 2;
+
+      // Density step: 2 on desktop, 3 on mobile
+      const step = isMobile ? 3 : 2;
+
+      for (let y = 0; y < imgH; y += step) {
+        for (let x = 0; x < imgW; x += step) {
+          const idx = (y * imgW + x) * 4;
+          const r = imgData[idx];
+          const g = imgData[idx + 1];
+          const b = imgData[idx + 2];
+          const brightness = (r + g + b) / 3;
+
+          // Ignore pure black background (black < 30)
+          if (brightness > 28) {
+            const destX = offsetX + x * scale;
+            const destY = offsetY + y * scale;
+
+            // Give subtle initial scatter
+            const startX = destX + (Math.random() - 0.5) * 80;
+            const startY = destY + (Math.random() - 0.5) * 80;
+
+            particles.push({
+              x: startX,
+              y: startY,
+              destX: destX,
+              destY: destY,
+              size: Math.random() * 1.5 + 1.2,
+              // Face highlights get bright neon orange, clothing gets deep burnt orange
+              color: brightness > 120 ? '#FF7138' : '#FF895D',
+              alpha: Math.min(0.9, (brightness / 255) * 0.75 + 0.25),
+              density: Math.random() * 32 + 18,
+            });
+          }
+        }
+      }
+    };
+
+    if (img.complete) {
+      initParticles();
+    } else {
+      img.onload = initParticles;
     }
 
-    // Animation Loop
+    // Physics Animation Loop
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      for (let i = 0; i < particles.length; i++) {
+      const len = particles.length;
+      for (let i = 0; i < len; i++) {
         const p = particles[i];
 
-        // Normal gentle float
-        p.originX += p.vx;
-        p.originY += p.vy;
-
-        // Bounce from boundaries
-        if (p.originX < 0 || p.originX > width) p.vx *= -1;
-        if (p.originY < 0 || p.originY > height) p.vy *= -1;
-
-        // Calculate distance from mouse
+        // Distance from mouse cursor
         const dx = mouse.x - p.x;
         const dy = mouse.y - p.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Repulsion physics: mouse pushes particles away
-        if (distance < mouse.radius) {
-          const forceDirectionX = dx / distance;
-          const forceDirectionY = dy / distance;
-          const force = (mouse.radius - distance) / mouse.radius;
-          const directionX = forceDirectionX * force * p.density;
-          const directionY = forceDirectionY * force * p.density;
+        if (dist < mouse.radius) {
+          // Explode / Repel away from cursor
+          const force = (mouse.radius - dist) / mouse.radius;
+          const forceDirX = dx / (dist || 1);
+          const forceDirY = dy / (dist || 1);
 
-          p.x -= directionX;
-          p.y -= directionY;
+          p.x -= forceDirX * force * p.density;
+          p.y -= forceDirY * force * p.density;
         } else {
-          // Return smoothly to origin position like spring/wave
-          if (p.x !== p.originX) {
-            const returnDx = p.x - p.originX;
-            p.x -= returnDx * 0.05;
-          }
-          if (p.y !== p.originY) {
-            const returnDy = p.y - p.originY;
-            p.y -= returnDy * 0.05;
-          }
+          // Return with magnetic spring tension to your original portrait shape
+          const returnDx = p.destX - p.x;
+          const returnDy = p.destY - p.y;
+          p.x += returnDx * 0.085;
+          p.y += returnDy * 0.085;
         }
 
         // Draw particle dot
-        ctx.save();
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha;
-        ctx.shadowColor = '#FF7138';
-        ctx.shadowBlur = p.size * 3;
         ctx.fill();
-        ctx.restore();
-
-        // Connect nearby particles with subtle glowing web lines
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const lineDx = p.x - p2.x;
-          const lineDy = p.y - p2.y;
-          const lineDist = Math.sqrt(lineDx * lineDx + lineDy * lineDy);
-
-          if (lineDist < 95) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = '#FF7138';
-            ctx.globalAlpha = (1 - lineDist / 95) * 0.16;
-            ctx.lineWidth = 0.8;
-            ctx.stroke();
-            ctx.restore();
-          }
-        }
       }
 
       animationFrameId = requestAnimationFrame(render);

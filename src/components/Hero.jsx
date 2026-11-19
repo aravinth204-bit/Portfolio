@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import HeroBackgroundParticles from './HeroBackgroundParticles';
+import HeroParticleVortex from './HeroParticleVortex';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,7 +31,7 @@ export default function Hero({ introReady }) {
     const actions = root.querySelector('.hero-actions');
     const tech = root.querySelector('.hero-tech');
 
-    // 1. Immediately set hidden state on mount BEFORE browser paints
+    // 1. Set initial hidden transform immediately on mount
     gsap.set(characters, { 
       autoAlpha: 0, 
       yPercent: 125, 
@@ -42,7 +42,7 @@ export default function Hero({ introReady }) {
     gsap.set(actions, { autoAlpha: 0, y: 14 });
     gsap.set(tech, { autoAlpha: 0, y: 12 });
 
-    // 2. Only trigger entrance animation when intro is ready
+    // 2. Play sequence as soon as curtain finishes
     if (!introReady) return undefined;
 
     const timeline = gsap.timeline({
@@ -100,8 +100,8 @@ export default function Hero({ introReady }) {
 
   return (
     <section id="home" className="hero-section" ref={heroRef} data-motion-section>
-      {/* Interactive Background Particles Canvas */}
-      <HeroBackgroundParticles />
+      {/* Ultimate Hybrid: Gravitational Vortex + Comet Sparks Trail */}
+      <HeroParticleVortex />
 
       <div className="hero-atmosphere" aria-hidden="true">
         <div className="hero-glow" />
@@ -175,20 +175,6 @@ export default function Hero({ introReady }) {
           justify-content: center;
         }
 
-        /* 3D Background Particles */
-        .hero-particles-bg-canvas {
-          position: absolute;
-          inset: 0;
-          z-index: 0;
-          pointer-events: none;
-        }
-
-        .hero-particles-bg-canvas canvas {
-          display: block;
-          width: 100% !important;
-          height: 100% !important;
-        }
-
         .hero-atmosphere,
         .hero-grid,
         .hero-glow {
@@ -202,7 +188,7 @@ export default function Hero({ introReady }) {
         }
 
         .hero-glow {
-          top: 20%;
+          top: 25%;
           left: 50%;
           transform: translateX(-50%);
           width: min(65vw, 900px);
@@ -212,10 +198,10 @@ export default function Hero({ introReady }) {
 
         .hero-grid {
           inset: 0;
-          opacity: 0.14;
+          opacity: 0.12;
           background-image:
-            linear-gradient(rgba(245, 245, 245, 0.045) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(245, 245, 245, 0.045) 1px, transparent 1px);
+            linear-gradient(rgba(245, 245, 245, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(245, 245, 245, 0.04) 1px, transparent 1px);
           background-size: 72px 72px;
           mask-image: radial-gradient(circle at center, black 40%, transparent 85%);
         }
@@ -226,7 +212,7 @@ export default function Hero({ introReady }) {
           width: 100%;
         }
 
-        /* Centered High-Impact Layout */
+        /* Centered High-Impact Typography Layout */
         .hero-centered-layout {
           min-height: 100svh;
           display: flex;
@@ -238,42 +224,15 @@ export default function Hero({ introReady }) {
         }
 
         .hero-copy {
-          max-width: 980px;
+          max-width: 960px;
           display: flex;
           flex-direction: column;
           align-items: center;
           margin: 0 auto;
         }
 
-        .availability {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.6rem;
-          margin-bottom: clamp(1.8rem, 3.5vh, 2.8rem);
-          color: var(--text-secondary);
-          font-size: 0.8rem;
-          font-weight: 700;
-          letter-spacing: 0.03em;
-          padding: 7px 18px;
-          background: rgba(23, 25, 31, 0.7);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 113, 56, 0.25);
-          border-radius: 99px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .availability-dot {
-          width: 7px;
-          height: 7px;
-          border-radius: 50%;
-          background: var(--accent);
-          box-shadow: 0 0 16px var(--accent-glow);
-          animation: pulse 2.4s ease-in-out infinite;
-        }
-
         .hero-heading {
-          max-width: 980px;
+          max-width: 960px;
           color: var(--soft-white);
           font-family: 'Space Grotesk', 'Manrope', sans-serif;
           font-size: clamp(3.2rem, 6.8vw, 7.2rem);
@@ -306,14 +265,13 @@ export default function Hero({ introReady }) {
           vertical-align: top;
         }
 
-        .hero-reveal,
         .hero-heading-char-inner {
           display: inline-block;
           transform-origin: 50% 100%;
         }
 
         .hero-description {
-          max-width: 680px;
+          max-width: 660px;
           margin-top: clamp(1.8rem, 3.5vh, 2.5rem);
           color: var(--text-secondary);
           font-size: clamp(1.05rem, 1.4vw, 1.25rem);
@@ -323,13 +281,14 @@ export default function Hero({ introReady }) {
 
         .hero-actions {
           display: flex;
+          flex-wrap: wrap;
           justify-content: center;
           gap: 1rem;
           margin-top: 2.4rem;
         }
 
         .hero-actions .btn {
-          min-width: 180px;
+          min-width: 175px;
         }
 
         .hero-tech {
