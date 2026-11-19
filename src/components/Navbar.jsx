@@ -15,6 +15,7 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('home');
   const menuButtonRef = useRef(null);
   const mobileNavigationRef = useRef(null);
+  const pendingNavigationRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,7 +69,22 @@ export default function Navbar() {
   }, [menuOpen]);
 
   useLayoutEffect(() => {
-    if (!menuOpen) return undefined;
+    if (!menuOpen) {
+      const href = pendingNavigationRef.current;
+      if (!href) return undefined;
+
+      pendingNavigationRef.current = null;
+      const frame = window.requestAnimationFrame(() => {
+        const target = document.querySelector(href);
+        if (!target) return;
+
+        window.scrollTo({
+          top: window.scrollY + target.getBoundingClientRect().top - 76,
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        });
+      });
+      return () => window.cancelAnimationFrame(frame);
+    }
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -79,15 +95,18 @@ export default function Navbar() {
 
   const handleNavClick = (event, href) => {
     event.preventDefault();
-    setMenuOpen(false);
-    if (menuOpen) menuButtonRef.current?.focus();
+    if (menuOpen) {
+      pendingNavigationRef.current = href;
+      setMenuOpen(false);
+      menuButtonRef.current?.focus();
+      return;
+    }
 
     const target = document.querySelector(href);
     if (!target) return;
 
-    const top = target.offsetTop - 76;
     window.scrollTo({
-      top: top,
+      top: window.scrollY + target.getBoundingClientRect().top - 76,
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
     });
   };

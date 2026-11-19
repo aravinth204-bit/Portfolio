@@ -115,7 +115,7 @@ export default function Hero({ introReady }) {
     const root = heroRef.current;
     if (!root) return undefined;
 
-    const media = gsap.matchMedia();
+    const media = gsap.matchMedia(root);
     media.add(
       {
         reduce: '(prefers-reduced-motion: reduce)',
@@ -124,66 +124,73 @@ export default function Hero({ introReady }) {
       ({ conditions }) => {
         if (conditions.reduce) return undefined;
 
-        const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        const availability = root.querySelector('.availability');
         const characters = root.querySelectorAll('.hero-heading-char-inner');
+        const description = root.querySelector('.hero-description');
+        const actions = root.querySelector('.hero-actions');
+        const tech = root.querySelector('.hero-tech');
+        const orbit = root.querySelector('.hero-art-orbit');
+        const sculpture = root.querySelector('.hero-art-sculpture');
+        const caption = root.querySelector('.hero-art-caption');
+        const entranceTargets = [availability, ...characters, description, actions, tech, orbit, sculpture, caption];
+        let frame = 0;
 
+        gsap.set(availability, { autoAlpha: 0, y: 8 });
+        gsap.set(characters, { autoAlpha: 0, yPercent: 115, rotateX: -12 });
+        gsap.set(description, { autoAlpha: 0, y: 14 });
+        gsap.set(actions, { autoAlpha: 0, y: 12 });
+        gsap.set(tech, { autoAlpha: 0, y: 10 });
+        gsap.set(orbit, { autoAlpha: 0, scale: 0.88, rotation: -5 });
+        gsap.set(sculpture, {
+          autoAlpha: 0,
+          scale: 0.9,
+          y: 24,
+          transformPerspective: 1000,
+          rotateY: -12,
+        });
+        gsap.set(caption, { autoAlpha: 0, y: 10 });
+
+        const timeline = gsap.timeline({
+          paused: true,
+          defaults: { ease: 'power3.out' },
+          onComplete: () => {
+            gsap.set(entranceTargets, { clearProps: 'all' });
+            if (!conditions.compact) {
+              gsap.to(orbit, {
+                rotation: 2,
+                duration: 24,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+              });
+            }
+          },
+        });
         timeline
-          .fromTo(
-            root.querySelector('.availability'),
-            { autoAlpha: 0, y: 8 },
-            { autoAlpha: 1, y: 0, duration: 0.55 },
-          )
-          .fromTo(
-            characters,
-            { autoAlpha: 0, yPercent: 115, rotateX: -12 },
-            {
-              autoAlpha: 1,
-              yPercent: 0,
-              rotateX: 0,
-              duration: 0.82,
-              stagger: 0.012,
-              ease: 'power4.out',
-            },
-            '-=0.16',
-          )
-          .fromTo(
-            root.querySelector('.hero-description'),
-            { autoAlpha: 0, y: 14 },
-            { autoAlpha: 1, y: 0, duration: 0.58 },
-            '-=0.32',
-          )
-          .fromTo(
-            root.querySelector('.hero-actions'),
-            { autoAlpha: 0, y: 12 },
-            { autoAlpha: 1, y: 0, duration: 0.5 },
-            '-=0.26',
-          )
-          .fromTo(
-            root.querySelector('.hero-tech'),
-            { autoAlpha: 0, y: 10 },
-            { autoAlpha: 1, y: 0, duration: 0.5 },
-            '-=0.25',
-          )
-          .fromTo(
-            root.querySelector('.hero-visual'),
-            {
-              autoAlpha: 0,
-              scale: 0.96,
-              transformPerspective: 1000,
-              rotateY: -9,
-              clipPath: 'inset(5% 0 5% 0)',
-            },
-            {
-              autoAlpha: 1,
-              scale: 1,
-              transformPerspective: 1000,
-              rotateY: 0,
-              clipPath: 'inset(0% 0 0% 0)',
-              duration: 0.92,
-              ease: 'power4.out',
-            },
-            '-=0.58',
-          );
+          .to(availability, { autoAlpha: 1, y: 0, duration: 0.5 })
+          .to(characters, {
+            autoAlpha: 1,
+            yPercent: 0,
+            rotateX: 0,
+            duration: 0.78,
+            stagger: 0.014,
+            ease: 'power4.out',
+          }, '-=0.14')
+          .to(description, { autoAlpha: 1, y: 0, duration: 0.52 }, '-=0.3')
+          .to(actions, { autoAlpha: 1, y: 0, duration: 0.48 }, '-=0.24')
+          .to(tech, { autoAlpha: 1, y: 0, duration: 0.46 }, '-=0.22')
+          .to(orbit, { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.95, ease: 'power3.out' }, '-=0.68')
+          .to(sculpture, {
+            autoAlpha: 1,
+            scale: 1,
+            y: 0,
+            rotateY: 0,
+            duration: 1.05,
+            ease: 'power4.out',
+          }, '-=0.72')
+          .to(caption, { autoAlpha: 1, y: 0, duration: 0.5 }, '-=0.48');
+
+        frame = window.requestAnimationFrame(() => timeline.play(0));
 
         if (!conditions.compact) {
           gsap.to(root.querySelector('.hero-glow'), {
@@ -193,7 +200,6 @@ export default function Hero({ introReady }) {
             yoyo: true,
             ease: 'sine.inOut',
           });
-
           gsap.to(root.querySelector('.hero-grid'), {
             yPercent: 8,
             ease: 'none',
@@ -231,6 +237,7 @@ export default function Hero({ introReady }) {
         }
 
         return () => {
+          window.cancelAnimationFrame(frame);
           timeline.kill();
         };
       },
@@ -244,7 +251,7 @@ export default function Hero({ introReady }) {
     if (!target) return;
 
     window.scrollTo({
-      top: target.offsetTop - 76,
+      top: window.scrollY + target.getBoundingClientRect().top - 76,
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
     });
   };
@@ -298,9 +305,24 @@ export default function Hero({ introReady }) {
           </div>
 
           <div className="hero-visual hero-reveal">
-            <div className="portrait-frame sculpture-frame">
-              <div className="portrait-index" aria-hidden="true">01</div>
-              <div className="sculpture-canvas-area">
+            <div className="hero-art-stage">
+              <div className="hero-art-field" aria-hidden="true" />
+              <svg
+                className="hero-art-orbit"
+                viewBox="0 0 480 560"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <ellipse className="hero-art-ring hero-art-ring--outer" cx="240" cy="275" rx="190" ry="226" />
+                <ellipse className="hero-art-ring hero-art-ring--inner" cx="240" cy="275" rx="144" ry="177" />
+                <path className="hero-art-orbit-line" d="M56 344 C132 446 321 478 413 356 C472 277 408 145 315 89" />
+                <path className="hero-art-orbit-accent" d="M70 364 C156 458 320 459 405 349" />
+                <circle className="hero-art-orbit-point" cx="405" cy="349" r="4" />
+                <path className="hero-art-crosshair" d="M240 30v28m0 434v28M32 275h28m360 0h28" />
+              </svg>
+              <span className="hero-art-kicker">Digital form / 01</span>
+              <span className="hero-art-coordinate" aria-hidden="true">01 — 03</span>
+              <div className="hero-art-sculpture">
                 <WebGLErrorBoundary fallback={<StaticSculpture />}>
                   {webglAvailable === true && webglReady ? (
                     <Suspense fallback={<StaticSculpture />}>
@@ -311,7 +333,7 @@ export default function Hero({ introReady }) {
                   )}
                 </WebGLErrorBoundary>
               </div>
-              <div className="portrait-caption">
+              <div className="hero-art-caption">
                 <img
                   src="/me.png"
                   alt=""
@@ -323,7 +345,7 @@ export default function Hero({ introReady }) {
                   <span>Aravinth</span>
                   <span>Frontend developer</span>
                 </div>
-                <span className="portrait-location">Tamil Nadu, India</span>
+                <span className="hero-art-location">Tamil Nadu, India</span>
               </div>
             </div>
           </div>
@@ -509,46 +531,108 @@ export default function Hero({ introReady }) {
 
         .hero-visual {
           justify-self: end;
-          width: min(100%, 440px);
+          width: min(100%, 500px);
         }
 
-        .portrait-frame {
+        .hero-art-stage {
           position: relative;
-          border: 1px solid var(--border);
-          background: var(--charcoal);
+          isolation: isolate;
+          width: 100%;
+          min-height: 510px;
+          overflow: visible;
         }
 
-        .portrait-frame::before {
-          content: '';
+        .hero-art-field {
           position: absolute;
-          z-index: 2;
-          top: -12px;
-          right: -12px;
-          width: 42%;
-          height: 28%;
-          border-top: 1px solid rgba(255, 113, 56, 0.65);
-          border-right: 1px solid rgba(255, 113, 56, 0.65);
+          z-index: -1;
+          inset: 5% 0 9%;
+          border-radius: 50%;
+          background:
+            radial-gradient(ellipse at 50% 48%, rgba(245, 245, 245, 0.075), transparent 35%),
+            radial-gradient(ellipse at 57% 54%, rgba(255, 113, 56, 0.17), transparent 62%);
+          filter: blur(7px);
           pointer-events: none;
         }
 
-        .portrait-index {
+        .hero-art-orbit {
           position: absolute;
-          z-index: 3;
-          top: 1.1rem;
-          right: 1.1rem;
-          color: var(--accent);
-          font-family: 'Space Grotesk', 'Manrope', sans-serif;
-          font-size: 0.72rem;
-          font-weight: 700;
+          z-index: 1;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          overflow: visible;
+          transform-box: fill-box;
+          transform-origin: center;
+          pointer-events: none;
         }
 
-        .sculpture-canvas-area {
-          position: relative;
-          height: clamp(360px, 47vh, 470px);
-          overflow: hidden;
-          background:
-            radial-gradient(ellipse at 50% 48%, rgba(255, 113, 56, 0.06), transparent 56%),
-            linear-gradient(145deg, #17191F, #0E1014 72%);
+        .hero-art-ring,
+        .hero-art-orbit-line,
+        .hero-art-orbit-accent,
+        .hero-art-crosshair {
+          fill: none;
+          vector-effect: non-scaling-stroke;
+        }
+
+        .hero-art-ring--outer {
+          stroke: rgba(245, 245, 245, 0.17);
+          stroke-width: 1;
+          stroke-dasharray: 1 7;
+        }
+
+        .hero-art-ring--inner {
+          stroke: rgba(245, 245, 245, 0.08);
+          stroke-width: 1;
+        }
+
+        .hero-art-orbit-line {
+          stroke: rgba(245, 245, 245, 0.24);
+          stroke-width: 1;
+        }
+
+        .hero-art-orbit-accent {
+          stroke: rgba(255, 113, 56, 0.58);
+          stroke-width: 1.4;
+        }
+
+        .hero-art-orbit-point {
+          fill: var(--accent);
+          filter: drop-shadow(0 0 7px rgba(255, 113, 56, 0.75));
+        }
+
+        .hero-art-crosshair {
+          stroke: rgba(245, 245, 245, 0.26);
+          stroke-width: 1;
+        }
+
+        .hero-art-kicker,
+        .hero-art-coordinate {
+          position: absolute;
+          z-index: 3;
+          top: 3.5%;
+          color: var(--muted-text);
+          font-size: 0.66rem;
+          font-weight: 700;
+          letter-spacing: 0.025em;
+        }
+
+        .hero-art-kicker {
+          left: 3%;
+          color: var(--soft-white);
+        }
+
+        .hero-art-coordinate {
+          right: 3%;
+          color: var(--accent);
+          font-family: 'Space Grotesk', 'Manrope', sans-serif;
+        }
+
+        .hero-art-sculpture {
+          position: absolute;
+          z-index: 2;
+          inset: 4% 1% 10%;
+          transform-style: preserve-3d;
+          will-change: transform, opacity;
         }
 
         .sculpture-canvas,
@@ -574,49 +658,49 @@ export default function Hero({ introReady }) {
           overflow: visible;
         }
 
-        .portrait-caption {
-          position: relative;
-          z-index: 3;
+        .hero-art-caption {
+          position: absolute;
+          z-index: 4;
+          right: 3%;
+          bottom: 1%;
+          left: 3%;
           display: flex;
-          min-height: 88px;
           align-items: center;
-          gap: 0.85rem;
-          border-top: 1px solid var(--border);
-          background: rgba(9, 10, 13, 0.88);
-          padding: 0.7rem 0.9rem;
-          backdrop-filter: blur(12px);
+          gap: 0.75rem;
+          border-top: 1px solid rgba(245, 245, 245, 0.2);
+          padding-top: 0.7rem;
           color: var(--text-secondary);
           font-size: 0.68rem;
           font-weight: 700;
         }
 
-        .portrait-caption img {
-          width: 52px;
-          height: 64px;
+        .hero-art-caption img {
+          width: 38px;
+          height: 42px;
           flex: 0 0 auto;
-          border: 1px solid var(--border);
+          border: 1px solid rgba(245, 245, 245, 0.22);
           object-fit: cover;
           object-position: 50% 15%;
           filter: saturate(0.74) contrast(1.04);
         }
 
-        .portrait-caption > div {
+        .hero-art-caption > div {
           display: grid;
           gap: 0.25rem;
         }
 
-        .portrait-caption > div span:first-child {
+        .hero-art-caption > div span:first-child {
           color: var(--soft-white);
           font-size: 0.76rem;
         }
 
-        .portrait-caption > div span:last-child,
-        .portrait-location {
+        .hero-art-caption > div span:last-child,
+        .hero-art-location {
           color: var(--muted-text);
           font-size: 0.64rem;
         }
 
-        .portrait-location {
+        .hero-art-location {
           margin-left: auto;
           text-align: right;
         }
@@ -681,6 +765,10 @@ export default function Hero({ introReady }) {
             width: min(70%, 420px);
             justify-self: start;
           }
+
+          .hero-art-stage {
+            min-height: 440px;
+          }
         }
 
         @media (max-width: 600px) {
@@ -717,26 +805,26 @@ export default function Hero({ introReady }) {
           }
 
           .hero-visual {
-            width: 86%;
-            margin-left: 14%;
+            width: 100%;
+            margin-left: 0;
           }
 
-          .sculpture-canvas-area {
-            height: 340px;
+          .hero-art-stage {
+            min-height: 340px;
           }
 
-          .portrait-caption {
-            min-height: 78px;
-            gap: 0.65rem;
-            padding: 0.55rem 0.65rem;
+          .hero-art-kicker,
+          .hero-art-coordinate {
+            top: 0;
           }
 
-          .portrait-caption img {
-            width: 44px;
-            height: 58px;
+          .hero-art-caption {
+            right: 5%;
+            bottom: 0;
+            left: 5%;
           }
 
-          .portrait-location {
+          .hero-art-location {
             max-width: 76px;
             line-height: 1.4;
           }

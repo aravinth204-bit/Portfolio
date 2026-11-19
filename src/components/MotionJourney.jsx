@@ -27,7 +27,7 @@ export default function MotionJourney() {
       const container = wrapper.querySelector('main .container');
       const containerLeft = container?.getBoundingClientRect().left ?? 32;
       const x = Math.max(12, containerLeft - wrapperRect.left - 14);
-      const height = wrapper.scrollHeight;
+      const height = wrapper.getBoundingClientRect().height;
       const width = wrapper.clientWidth;
       const hero = wrapper.querySelector('#home');
       const heroTop = hero ? hero.getBoundingClientRect().top - wrapperRect.top : 0;
@@ -112,7 +112,6 @@ export default function MotionJourney() {
         gsap.set([...nodes.children], { autoAlpha: 0.55, scale: 1 });
       }
 
-      ScrollTrigger.refresh();
     };
 
     const scheduleBuild = () => {

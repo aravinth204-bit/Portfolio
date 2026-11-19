@@ -32,7 +32,6 @@ export default function App() {
 
     media.add('(prefers-reduced-motion: no-preference)', () => {
       const main = document.querySelector('#main-content');
-      let portraitParallax;
       const context = gsap.context(() => {
         const servicesIntro = document.querySelector('.services-intro');
         if (servicesIntro) {
@@ -158,8 +157,7 @@ export default function App() {
             },
           });
 
-          portraitParallax = gsap.matchMedia();
-          portraitParallax.add('(min-width: 801px)', () => {
+          if (window.matchMedia('(min-width: 801px)').matches) {
             gsap.to(about.querySelector('.about-portrait img'), {
               yPercent: -3,
               scale: 1.04,
@@ -171,7 +169,7 @@ export default function App() {
                 scrub: 0.8,
               },
             });
-          });
+          }
 
           gsap.fromTo(about.querySelectorAll('.about-copy > p, .about-details, .about-contact'), {
             y: 14,
@@ -265,9 +263,10 @@ export default function App() {
           const closingSequence = gsap.timeline({
             scrollTrigger: {
               trigger: contact,
-              start: 'bottom 72%',
-              end: 'bottom 12%',
+              start: 'bottom bottom',
+              end: 'bottom 72%',
               scrub: 0.6,
+              invalidateOnRefresh: true,
             },
           });
           closingSequence
@@ -293,7 +292,6 @@ export default function App() {
       }, main);
 
       return () => {
-        portraitParallax?.revert();
         context.revert();
       };
     });
