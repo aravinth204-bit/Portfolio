@@ -23,20 +23,15 @@ export default function Hero({ introReady }) {
   const heroRef = useRef(null);
 
   useLayoutEffect(() => {
-    if (!introReady) return undefined;
-
     const root = heroRef.current;
     if (!root) return undefined;
 
-    const availability = root.querySelector('.availability');
     const characters = root.querySelectorAll('.hero-heading-char-inner');
     const description = root.querySelector('.hero-description');
     const actions = root.querySelector('.hero-actions');
     const tech = root.querySelector('.hero-tech');
-    const entranceTargets = [availability, ...characters, description, actions, tech].filter(Boolean);
 
-    // Explicit initial state
-    gsap.set(availability, { autoAlpha: 0, y: 16 });
+    // 1. Immediately set hidden state on mount BEFORE browser paints
     gsap.set(characters, { 
       autoAlpha: 0, 
       yPercent: 125, 
@@ -47,16 +42,14 @@ export default function Hero({ introReady }) {
     gsap.set(actions, { autoAlpha: 0, y: 14 });
     gsap.set(tech, { autoAlpha: 0, y: 12 });
 
+    // 2. Only trigger entrance animation when intro is ready
+    if (!introReady) return undefined;
+
     const timeline = gsap.timeline({
-      delay: 0.1,
       defaults: { ease: 'power3.out' },
-      onComplete: () => {
-        gsap.set(entranceTargets, { clearProps: 'all' });
-      },
     });
 
     timeline
-      .to(availability, { autoAlpha: 1, y: 0, duration: 0.45 })
       .to(characters, {
         autoAlpha: 1,
         yPercent: 0,
@@ -64,7 +57,7 @@ export default function Hero({ introReady }) {
         duration: 0.95,
         stagger: 0.022,
         ease: 'power4.out',
-      }, '-=0.15')
+      })
       .to(description, { autoAlpha: 1, y: 0, duration: 0.52 }, '-=0.35')
       .to(actions, { autoAlpha: 1, y: 0, duration: 0.48 }, '-=0.25')
       .to(tech, { autoAlpha: 1, y: 0, duration: 0.46 }, '-=0.22');
@@ -118,11 +111,6 @@ export default function Hero({ introReady }) {
       <div className="container hero-container">
         <div className="hero-centered-layout">
           <div className="hero-copy">
-            <div className="availability hero-reveal">
-              <span className="availability-dot" aria-hidden="true" />
-              <span>Creative Frontend Engineer &bull; Open for Roles &amp; High-Impact Projects</span>
-            </div>
-
             <h1 className="hero-heading" aria-label="Aravinth S. Creative Developer crafting digital experiences.">
               <span className="hero-heading-line" aria-hidden="true">
                 {getWords("Aravinth S.")}
@@ -318,6 +306,7 @@ export default function Hero({ introReady }) {
           vertical-align: top;
         }
 
+        .hero-reveal,
         .hero-heading-char-inner {
           display: inline-block;
           transform-origin: 50% 100%;
