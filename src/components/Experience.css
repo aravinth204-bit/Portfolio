@@ -1,0 +1,114 @@
+.experience-section {
+  position: relative;
+  background: var(--midnight);
+}
+
+.experience-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: clamp(3rem, 9vw, 9rem);
+}
+
+.experience-intro {
+  max-width: 32rem;
+}
+
+.experience-intro .section-heading {
+  font-size: clamp(2.35rem, 4.2vw, 3.8rem);
+  line-height: 1.02;
+}
+
+.experience-timeline {
+  position: relative;
+  min-width: 0;
+  padding: 0.2rem 0 0.2rem 1.5rem;
+}
+
+.experience-track {
+  position: absolute;
+  top: 0.45rem;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  overflow: hidden;
+  background: var(--border-strong);
+}
+
+.experience-track-progress {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleY(1);
+  transform-origin: top center;
+}
+
+.experience-entry {
+  position: relative;
+  border-top: 1px solid var(--border);
+  padding: 1.35rem 0 1.5rem;
+}
+
+.experience-marker {
+  position: absolute;
+  top: 1.68rem;
+  left: -1.83rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--accent-glow);
+  transform: scale(1);
+}
+
+.experience-entry-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.experience-entry h3 {
+  color: var(--soft-white);
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.experience-organization {
+  margin-top: 0.25rem;
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.experience-duration {
+  flex: 0 0 auto;
+  padding-top: 0.3rem;
+  color: var(--muted-text);
+  font-size: 0.76rem;
+}
+
+.experience-description {
+  max-width: 43rem;
+  margin-top: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+@media (max-width: 800px) {
+  .experience-layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .experience-entry-heading {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+}

@@ -20,7 +20,8 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="section services-section">
+    <section id="services" className="section services-section" data-motion-section>
+      <span className="motion-thread" aria-hidden="true" />
       <div className="container">
         <div className="services-layout">
           <div className="services-intro reveal">

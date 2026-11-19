@@ -20,7 +20,10 @@ const WhatsAppIcon = () => (
 );
 
 export default function Footer() {
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollToTop = () => window.scrollTo({
+    top: 0,
+    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+  });
 
   const socialLinks = [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/aravinth-frontend-devloper', icon: <LinkedInIcon />, hoverBg: '#0A66C2' },
@@ -29,9 +32,9 @@ export default function Footer() {
   ];
 
   return (
-    <footer style={{
-      background: 'var(--text-primary)',
-      color: 'rgba(255,255,255,0.7)',
+    <footer className="site-footer" style={{
+      background: 'var(--charcoal)',
+      color: 'var(--text-secondary)',
       padding: '3.5rem 0 2rem',
     }}>
       <div className="container">
@@ -44,17 +47,17 @@ export default function Footer() {
           marginBottom: '2.5rem',
         }}>
           {/* Brand */}
-          <div>
-            <p style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff', letterSpacing: '-0.04em', marginBottom: '0.35rem' }}>
-              Aravinth<span style={{ color: '#818CF8' }}>.</span>
+          <div className="footer-motion">
+            <p style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--soft-white)', letterSpacing: '-0.04em', marginBottom: '0.35rem' }}>
+              Aravinth<span style={{ color: 'var(--accent)' }}>.</span>
             </p>
-            <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.5)' }}>
+            <p style={{ fontSize: '0.88rem', color: 'var(--muted-text)' }}>
               Freelance Frontend Developer · Tamil Nadu, India
             </p>
           </div>
 
           {/* Social Links */}
-          <div style={{ display: 'flex', gap: '1rem' }}>
+          <div className="footer-motion" style={{ display: 'flex', gap: '1rem' }}>
             {socialLinks.map(s => (
               <a
                 key={s.label}
@@ -94,10 +97,12 @@ export default function Footer() {
           {/* Back to Top */}
           <button
             onClick={scrollToTop}
+            className="footer-motion"
+            data-magnetic
             style={{
-              background: 'rgba(99,102,241,0.2)',
-              border: '1px solid rgba(99,102,241,0.3)',
-              color: '#818CF8',
+              background: 'rgba(255,113,56,0.12)',
+              border: '1px solid rgba(255,113,56,0.3)',
+              color: 'var(--accent)',
               padding: '0.6rem 1.2rem',
               borderRadius: 'var(--radius-sm)',
               cursor: 'pointer',
@@ -106,16 +111,16 @@ export default function Footer() {
               fontFamily: 'inherit',
               transition: 'var(--transition)',
             }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.35)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(99,102,241,0.2)'}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,113,56,0.2)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,113,56,0.12)'}
           >
             ↑ Back to Top
           </button>
         </div>
 
         {/* Divider */}
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.75rem', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.83rem', color: 'rgba(255,255,255,0.35)' }}>
+        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1.75rem', textAlign: 'center' }}>
+          <p className="footer-motion" style={{ fontSize: '0.83rem', color: 'var(--muted-text)' }}>
             © 2026 Aravinth · Freelance Frontend Developer · Built with React & Vite
           </p>
         </div>

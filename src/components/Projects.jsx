@@ -64,39 +64,93 @@ export default function Projects() {
     if (!section) return undefined;
 
     const motion = gsap.matchMedia();
-    motion.add('(prefers-reduced-motion: no-preference)', () => {
+    motion.add({
+      motion: '(prefers-reduced-motion: no-preference)',
+      pointerFine: '(hover: hover) and (pointer: fine) and (min-width: 761px)',
+    }, ({ conditions }) => {
+      if (!conditions.motion) return undefined;
+
       const cards = section.querySelectorAll('.project-card');
+      const pointerFine = conditions.pointerFine;
+      const cleanupHandlers = [];
 
       cards.forEach((card) => {
-        const image = card.querySelector('.project-preview-image');
+        const preview = card.querySelector('.project-preview');
+        const imageFrame = card.querySelector('.project-preview-image-frame');
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: card,
-            start: 'top 88%',
+            start: 'top 82%',
             once: true,
           },
         });
 
         timeline
           .fromTo(
-            card,
-            { autoAlpha: 0, y: 30 },
-            { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' },
+            imageFrame,
+            { scale: 1.045, clipPath: 'inset(8% 5% 8% 5%)' },
+            { scale: 1, clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power2.out' },
           )
           .fromTo(
-            image,
-            { scale: 1.06, clipPath: 'inset(5% 3% 5% 3%)' },
-            { scale: 1, clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: 'power2.out' },
-            '-=0.55',
+            [card.querySelector('.project-category'), card.querySelector('h3')],
+            { y: 18, autoAlpha: 0 },
+            { y: 0, autoAlpha: 1, duration: 0.58, stagger: 0.1, ease: 'power3.out' },
+            '-=0.66',
+          )
+          .fromTo(
+            [
+              card.querySelector('.project-description'),
+              card.querySelector('.project-case-study'),
+              card.querySelector('.project-footer'),
+            ],
+            { y: 12, autoAlpha: 0 },
+            { y: 0, autoAlpha: 1, duration: 0.48, stagger: 0.08, ease: 'power2.out' },
+            '-=0.3',
           );
+
+        if (pointerFine) {
+          const setTiltX = gsap.quickTo(imageFrame, 'rotationX', { duration: 0.32, ease: 'power3.out' });
+          const setTiltY = gsap.quickTo(imageFrame, 'rotationY', { duration: 0.32, ease: 'power3.out' });
+          const setX = gsap.quickTo(imageFrame, 'x', { duration: 0.3, ease: 'power3.out' });
+          const setY = gsap.quickTo(imageFrame, 'y', { duration: 0.3, ease: 'power3.out' });
+          const handlePointerMove = (event) => {
+            const bounds = preview.getBoundingClientRect();
+            const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+            const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+            setX(x * -16);
+            setY(y * -16);
+            setTiltX(y * -1.5);
+            setTiltY(x * 1.5);
+          };
+          const resetPointer = () => {
+            setX(0);
+            setY(0);
+            setTiltX(0);
+            setTiltY(0);
+          };
+
+          preview.addEventListener('pointermove', handlePointerMove, { passive: true });
+          preview.addEventListener('pointerleave', resetPointer);
+          cleanupHandlers.push(() => {
+            preview.removeEventListener('pointermove', handlePointerMove);
+            preview.removeEventListener('pointerleave', resetPointer);
+            setTiltX.tween.kill();
+            setTiltY.tween.kill();
+            setX.tween.kill();
+            setY.tween.kill();
+          });
+        }
       });
+
+      return () => cleanupHandlers.forEach((cleanup) => cleanup());
     });
 
     return () => motion.revert();
   }, []);
 
   return (
-    <section id="projects" className="section projects-section" ref={sectionRef}>
+    <section id="projects" className="section projects-section" ref={sectionRef} data-motion-section>
+      <span className="motion-thread" aria-hidden="true" />
       <div className="container">
         <div className="projects-intro reveal">
           <div className="projects-intro-copy">
@@ -125,15 +179,18 @@ export default function Projects() {
                   rel="noopener noreferrer"
                   aria-label={`View ${project.title} project`}
                 >
-                  <img
-                    className="project-preview-image"
-                    src={project.screenshot}
-                    alt={`${project.title} website preview`}
-                    width="1024"
-                    height="1024"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  <span className="project-preview-image-frame" aria-hidden="true">
+                    <img
+                      className="project-preview-image"
+                      src={project.screenshot}
+                      alt=""
+                      width="1024"
+                      height="1024"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </span>
+                  <span className="sr-only">{project.title} website preview</span>
                   <span className="project-preview-action">Open live site</span>
                 </a>
 

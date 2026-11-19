@@ -21,7 +21,8 @@ const principles = [
 
 export default function WhyMe() {
   return (
-    <section className="section approach-section">
+    <section className="section approach-section" data-motion-section>
+      <span className="motion-thread" aria-hidden="true" />
       <div className="container">
         <div className="approach-layout">
           <div className="approach-intro reveal">

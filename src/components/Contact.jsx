@@ -124,17 +124,18 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" style={{ padding: '7rem 0' }}>
+    <section id="contact" className="contact-section" data-motion-section style={{ padding: '7rem 0' }}>
+      <span className="motion-thread" aria-hidden="true" />
       <div className="container">
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1.25fr',
           gap: '5rem',
           alignItems: 'start',
-        }}>
+        }} className="contact-layout">
 
           {/* ── LEFT — Info ── */}
-          <div className="reveal">
+          <div className="reveal contact-intro">
             <span className="section-tag">
               <SmallMailIcon /> Contact
             </span>
@@ -152,6 +153,8 @@ export default function Contact() {
               {contactLinks.map(c => (
                 <a
                   key={c.label}
+                  className="contact-link"
+                  data-cursor-hover
                   href={c.href}
                   target={c.href.startsWith('http') ? '_blank' : undefined}
                   rel="noopener noreferrer"
@@ -203,7 +206,7 @@ export default function Contact() {
           </div>
 
           {/* ── RIGHT — Form ── */}
-          <div className="reveal reveal-delay-2">
+          <div className="reveal reveal-delay-2 contact-form-panel">
             <div className="glass-card" style={{ padding: '2.5rem' }}>
 
               {status === 'success' && (
@@ -233,24 +236,24 @@ export default function Contact() {
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)',
+                      <label htmlFor="contact-name" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)',
                         display: 'block', marginBottom: '0.4rem' }}>
                         Your Name *
                       </label>
                       <input id="contact-name" type="text" name="name"
-                        placeholder="John Doe" value={form.name}
+                        placeholder="ARAVINTH.S" value={form.name}
                         onChange={handleChange} required style={inputStyle}
                         onFocus={e => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 0 3px var(--accent-glow)'; }}
                         onBlur={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; }}
                       />
                     </div>
                     <div>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)',
+                      <label htmlFor="contact-email" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)',
                         display: 'block', marginBottom: '0.4rem' }}>
                         Email Address *
                       </label>
                       <input id="contact-email" type="email" name="email"
-                        placeholder="john@example.com" value={form.email}
+                        placeholder="aravinth204@gmail.com" value={form.email}
                         onChange={handleChange} required style={inputStyle}
                         onFocus={e => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 0 3px var(--accent-glow)'; }}
                         onBlur={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; }}
@@ -259,11 +262,11 @@ export default function Contact() {
                   </div>
 
                   <div>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)',
+                    <label htmlFor="contact-subject" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)',
                       display: 'block', marginBottom: '0.4rem' }}>
                       Subject
                     </label>
-                    <input type="text" name="subject"
+                    <input id="contact-subject" type="text" name="subject"
                       placeholder="Project inquiry / Website redesign..." style={inputStyle}
                       onFocus={e => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 0 3px var(--accent-glow)'; }}
                       onBlur={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; }}
@@ -271,7 +274,7 @@ export default function Contact() {
                   </div>
 
                   <div>
-                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)',
+                    <label htmlFor="contact-message" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)',
                       display: 'block', marginBottom: '0.4rem' }}>
                       Message *
                     </label>
@@ -286,6 +289,7 @@ export default function Contact() {
 
                   <button id="contact-submit" type="submit"
                     className="btn btn-primary"
+                    data-magnetic
                     disabled={status === 'loading'}
                     style={{ width: '100%', justifyContent: 'center', fontSize: '1rem', padding: '1rem',
                       opacity: status === 'loading' ? 0.75 : 1 }}>
@@ -315,7 +319,7 @@ export default function Contact() {
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
         @media (max-width: 768px) {
-          #contact .container > div { grid-template-columns: 1fr !important; gap: 3rem !important; }
+          #contact .contact-layout { grid-template-columns: 1fr !important; gap: 3rem !important; }
           #contact .container > div > .reveal { min-width: 0; }
           #contact .contact-links > a { min-width: 0; }
           #contact form > div:first-child { grid-template-columns: 1fr !important; }

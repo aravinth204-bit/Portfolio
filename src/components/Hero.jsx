@@ -79,12 +79,16 @@ function supportsWebGL() {
 function getWords(line) {
   return line.split(' ').map((word, index) => (
     <span className="hero-heading-word" key={`${word}-${index}`}>
-      <span className="hero-heading-word-inner">{word}</span>
+      {Array.from(word).map((character, characterIndex) => (
+        <span className="hero-heading-char" key={`${character}-${characterIndex}`}>
+          <span className="hero-heading-char-inner">{character}</span>
+        </span>
+      ))}
     </span>
   ));
 }
 
-export default function Hero() {
+export default function Hero({ introReady }) {
   const heroRef = useRef(null);
   const [webglAvailable, setWebglAvailable] = useState(null);
   const [webglReady, setWebglReady] = useState(false);
@@ -106,6 +110,8 @@ export default function Hero() {
   }, []);
 
   useLayoutEffect(() => {
+    if (!introReady) return undefined;
+
     const root = heroRef.current;
     if (!root) return undefined;
 
@@ -113,13 +119,13 @@ export default function Hero() {
     media.add(
       {
         reduce: '(prefers-reduced-motion: reduce)',
-        compact: '(max-width: 700px)',
+        compact: '(max-width: 800px)',
       },
       ({ conditions }) => {
         if (conditions.reduce) return undefined;
 
         const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
-        const words = root.querySelectorAll('.hero-heading-word-inner');
+        const characters = root.querySelectorAll('.hero-heading-char-inner');
 
         timeline
           .fromTo(
@@ -128,14 +134,14 @@ export default function Hero() {
             { autoAlpha: 1, y: 0, duration: 0.55 },
           )
           .fromTo(
-            words,
+            characters,
             { autoAlpha: 0, yPercent: 115, rotateX: -12 },
             {
               autoAlpha: 1,
               yPercent: 0,
               rotateX: 0,
               duration: 0.82,
-              stagger: 0.032,
+              stagger: 0.012,
               ease: 'power4.out',
             },
             '-=0.16',
@@ -160,9 +166,23 @@ export default function Hero() {
           )
           .fromTo(
             root.querySelector('.hero-visual'),
-            { autoAlpha: 0, x: 20, scale: 0.985 },
-            { autoAlpha: 1, x: 0, scale: 1, duration: 0.8 },
-            '-=0.92',
+            {
+              autoAlpha: 0,
+              scale: 0.96,
+              transformPerspective: 1000,
+              rotateY: -9,
+              clipPath: 'inset(5% 0 5% 0)',
+            },
+            {
+              autoAlpha: 1,
+              scale: 1,
+              transformPerspective: 1000,
+              rotateY: 0,
+              clipPath: 'inset(0% 0 0% 0)',
+              duration: 0.92,
+              ease: 'power4.out',
+            },
+            '-=0.58',
           );
 
         if (!conditions.compact) {
@@ -184,14 +204,40 @@ export default function Hero() {
               scrub: 0.7,
             },
           });
+
+          gsap.to(root.querySelector('.hero-copy'), {
+            yPercent: -8,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: root,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 0.65,
+            },
+          });
+          gsap.to(root.querySelector('.hero-visual'), {
+            yPercent: 7,
+            scale: 0.94,
+            rotateY: 4,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: root,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 0.65,
+            },
+          });
+
         }
 
-        return () => timeline.kill();
+        return () => {
+          timeline.kill();
+        };
       },
     );
 
     return () => media.revert();
-  }, []);
+  }, [introReady]);
 
   const scrollTo = (id) => {
     const target = document.getElementById(id);
@@ -204,7 +250,7 @@ export default function Hero() {
   };
 
   return (
-    <section id="home" className="hero-section" ref={heroRef}>
+    <section id="home" className="hero-section" ref={heroRef} data-motion-section>
       <div className="hero-atmosphere" aria-hidden="true">
         <div className="hero-glow" />
         <div className="hero-grid" />
@@ -232,11 +278,11 @@ export default function Hero() {
             </p>
 
             <div className="hero-actions hero-reveal">
-              <button className="btn btn-primary" type="button" onClick={() => scrollTo('projects')}>
+              <button className="btn btn-primary" type="button" data-magnetic onClick={() => scrollTo('projects')}>
                 Explore my work
                 <span aria-hidden="true">↓</span>
               </button>
-              <button className="btn btn-secondary" type="button" onClick={() => scrollTo('contact')}>
+              <button className="btn btn-secondary" type="button" data-magnetic onClick={() => scrollTo('contact')}>
                 Let's talk
               </button>
             </div>
@@ -327,7 +373,6 @@ export default function Hero() {
             linear-gradient(90deg, rgba(245, 245, 245, 0.055) 1px, transparent 1px);
           background-size: 72px 72px;
           mask-image: linear-gradient(to right, transparent 8%, black 65%, transparent 100%);
-          will-change: transform;
         }
 
         .hero-container {
@@ -397,7 +442,13 @@ export default function Hero() {
           vertical-align: top;
         }
 
-        .hero-heading-word-inner {
+        .hero-heading-char {
+          display: inline-block;
+          overflow: hidden;
+          vertical-align: top;
+        }
+
+        .hero-heading-char-inner {
           display: inline-block;
           transform-origin: 50% 100%;
         }
@@ -570,10 +621,6 @@ export default function Hero() {
           text-align: right;
         }
 
-        .hero-reveal {
-          will-change: transform, opacity;
-        }
-
         .hero-scroll {
           position: absolute;
           z-index: 2;
@@ -692,6 +739,13 @@ export default function Hero() {
           .portrait-location {
             max-width: 76px;
             line-height: 1.4;
+          }
+        }
+
+        @media (min-width: 701px) and (prefers-reduced-motion: no-preference) {
+          .hero-glow,
+          .hero-grid {
+            will-change: transform;
           }
         }
 

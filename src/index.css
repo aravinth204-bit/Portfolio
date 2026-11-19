@@ -111,6 +111,25 @@ ul {
   padding-block: var(--section-space);
 }
 
+.section[data-motion-section] {
+  position: relative;
+}
+
+.contact-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  background:
+    radial-gradient(ellipse at 86% 20%, rgba(255, 113, 56, 0.075), transparent 34rem),
+    var(--midnight);
+}
+
+.contact-section > .container {
+  position: relative;
+  z-index: 1;
+}
+
 .section-tag {
   display: inline-flex;
   align-items: center;
@@ -157,6 +176,16 @@ ul {
     border-color var(--transition),
     transform var(--transition),
     box-shadow var(--transition);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
 }
 
 .btn:hover {

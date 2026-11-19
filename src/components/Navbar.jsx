@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 const navLinks = [
   { href: '#home', label: 'Home', id: 'home' },
@@ -6,6 +6,7 @@ const navLinks = [
   { href: '#projects', label: 'Work', id: 'projects' },
   { href: '#skills', label: 'Skills', id: 'skills' },
   { href: '#about', label: 'About', id: 'about' },
+  { href: '#experience', label: 'Experience', id: 'experience' },
 ];
 
 export default function Navbar() {
@@ -19,7 +20,7 @@ export default function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 32);
 
-      const sections = ['home', 'services', 'projects', 'skills', 'about', 'contact'];
+      const sections = ['home', 'services', 'projects', 'skills', 'about', 'experience', 'contact'];
       let current = 'home';
 
       sections.forEach((id) => {
@@ -42,6 +43,23 @@ export default function Navbar() {
       if (event.key === 'Escape' && menuOpen) {
         setMenuOpen(false);
         menuButtonRef.current?.focus();
+        return;
+      }
+
+      if (event.key === 'Tab' && menuOpen) {
+        const links = [...mobileNavigationRef.current.querySelectorAll('a')];
+        if (!links.length) return;
+        const firstLink = links[0];
+        const lastLink = links[links.length - 1];
+        if (event.shiftKey && (
+          document.activeElement === firstLink || document.activeElement === menuButtonRef.current
+        )) {
+          event.preventDefault();
+          lastLink.focus();
+        } else if (!event.shiftKey && document.activeElement === lastLink) {
+          event.preventDefault();
+          firstLink.focus();
+        }
       }
     };
 
@@ -49,12 +67,11 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [menuOpen]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!menuOpen) return undefined;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    mobileNavigationRef.current?.querySelector('a')?.focus();
     return () => {
       document.body.style.overflow = previousOverflow;
     };
@@ -63,6 +80,7 @@ export default function Navbar() {
   const handleNavClick = (event, href) => {
     event.preventDefault();
     setMenuOpen(false);
+    if (menuOpen) menuButtonRef.current?.focus();
 
     const target = document.querySelector(href);
     if (!target) return;
@@ -108,6 +126,7 @@ export default function Navbar() {
           <a
             className="btn btn-primary nav-contact"
             href="#contact"
+            data-magnetic
             onClick={(event) => handleNavClick(event, '#contact')}
           >
             Let's talk
@@ -149,6 +168,7 @@ export default function Navbar() {
             <a
               className="btn btn-primary mobile-contact"
               href="#contact"
+              data-magnetic
               onClick={(event) => handleNavClick(event, '#contact')}
               tabIndex={menuOpen ? 0 : -1}
             >
@@ -221,7 +241,7 @@ export default function Navbar() {
           display: flex;
           justify-content: center;
           align-items: center;
-          gap: 2.1rem;
+          gap: clamp(0.85rem, 2.1vw, 2.1rem);
         }
 
         .nav-link {
@@ -309,7 +329,7 @@ export default function Navbar() {
 
           .mobile-navigation {
             position: fixed;
-            z-index: -1;
+            z-index: 1;
             inset: var(--nav-height) 0 0;
             display: block;
             visibility: hidden;
