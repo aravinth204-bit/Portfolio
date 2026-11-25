@@ -18,7 +18,7 @@
 
 .projects-intro .section-heading {
   margin-bottom: 0;
-  font-size: clamp(2.7rem, 5.7vw, 5rem);
+  font-size: var(--text-h2);
 }
 
 .projects-intro .section-sub {
@@ -175,7 +175,7 @@
 
 .project-heading h3 {
   color: var(--soft-white);
-  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(1.8rem, 3.2vw, 3rem);
   font-weight: 600;
   line-height: 1;

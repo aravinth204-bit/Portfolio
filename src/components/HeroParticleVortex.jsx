@@ -6,19 +6,14 @@ export default function HeroParticleVortex() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) return undefined;
 
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let animationFrameId = 0;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
-
-    const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      initVortexParticles();
-    };
-    window.addEventListener('resize', handleResize);
 
     // Mouse coordinates with interpolation
     const mouse = {
@@ -33,8 +28,8 @@ export default function HeroParticleVortex() {
     };
 
     // 1. Vortex Ambient Cosmic Particles
-    const isMobile = width < 768;
-    const vortexCount = isMobile ? 380 : 850;
+    const vortexCount = width < 768 ? 200 : 460;
+    const linkStep = vortexCount > 300 ? 2 : 1;
     let particles = [];
 
     const initVortexParticles = () => {
@@ -62,6 +57,7 @@ export default function HeroParticleVortex() {
 
     // 2. Comet Sparks Trail System
     let sparks = [];
+    const maxSparks = 240;
 
     const addSparks = (x, y, count = 4) => {
       for (let i = 0; i < count; i++) {
@@ -78,34 +74,10 @@ export default function HeroParticleVortex() {
           decay: Math.random() * 0.03 + 0.02,
         });
       }
+      if (sparks.length > maxSparks) sparks.splice(0, sparks.length - maxSparks);
     };
 
-    const handleMouseMove = (e) => {
-      mouse.targetX = e.clientX;
-      mouse.targetY = e.clientY;
-      mouse.isHovered = true;
-
-      // Spawn sparks when mouse moves
-      const dist = Math.hypot(e.clientX - mouse.prevX, e.clientY - mouse.prevY);
-      if (dist > 4) {
-        const count = Math.min(Math.floor(dist * 0.25) + 2, 8);
-        addSparks(e.clientX, e.clientY, count);
-        mouse.prevX = e.clientX;
-        mouse.prevY = e.clientY;
-      }
-    };
-
-    const handleMouseLeave = () => {
-      mouse.isHovered = false;
-      mouse.targetX = width / 2;
-      mouse.targetY = height / 2;
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseleave', handleMouseLeave);
-
-    // Hybrid Render Loop: Vortex Swirl + Comet Sparks Trail
-    const render = () => {
+    const draw = () => {
       ctx.clearRect(0, 0, width, height);
 
       // Smooth mouse follow
@@ -162,8 +134,8 @@ export default function HeroParticleVortex() {
         ctx.globalAlpha = p.alpha;
         ctx.fill();
 
-        // Web lines for vortex core
-        for (let j = i + 1; j < particles.length; j++) {
+        // Web lines for vortex core (sampled to keep the frame cheap)
+        for (let j = i + linkStep; j < particles.length; j += linkStep) {
           const p2 = particles[j];
           const lineDx = p.x - p2.x;
           const lineDy = p.y - p2.y;
@@ -204,14 +176,97 @@ export default function HeroParticleVortex() {
         ctx.fill();
         ctx.restore();
       }
-
-      animationFrameId = requestAnimationFrame(render);
     };
 
-    render();
+    // Only draw while the hero is on screen and the tab is visible.
+    let inView = true;
+    const shouldRun = () => !reducedMotion && inView && !document.hidden;
+
+    const tick = () => {
+      draw();
+      animationFrameId = shouldRun() ? requestAnimationFrame(tick) : 0;
+    };
+
+    const kick = () => {
+      if (shouldRun() && !animationFrameId) {
+        animationFrameId = requestAnimationFrame(tick);
+      }
+    };
+
+    const handleResize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      initVortexParticles();
+      if (reducedMotion) draw();
+      else kick();
+    };
+
+    const handleMouseMove = (event) => {
+      if (!shouldRun()) return;
+
+      mouse.targetX = event.clientX;
+      mouse.targetY = event.clientY;
+      mouse.isHovered = true;
+
+      // Spawn sparks when mouse moves
+      const dist = Math.hypot(event.clientX - mouse.prevX, event.clientY - mouse.prevY);
+      if (dist > 4) {
+        const count = Math.min(Math.floor(dist * 0.25) + 2, 8);
+        addSparks(event.clientX, event.clientY, count);
+        mouse.prevX = event.clientX;
+        mouse.prevY = event.clientY;
+      }
+    };
+
+    const handleMouseLeave = () => {
+      mouse.isHovered = false;
+      mouse.targetX = width / 2;
+      mouse.targetY = height / 2;
+    };
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = 0;
+        return;
+      }
+      kick();
+    };
+
+    let observer;
+    const wrapper = canvas.parentElement;
+    if (wrapper && 'IntersectionObserver' in window) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          inView = entry.isIntersecting;
+          if (!inView) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = 0;
+          } else {
+            kick();
+          }
+        },
+        { rootMargin: '120px 0px' },
+      );
+      observer.observe(wrapper);
+    }
+
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    if (!reducedMotion) {
+      window.addEventListener('mousemove', handleMouseMove, { passive: true });
+      window.addEventListener('mouseleave', handleMouseLeave);
+      kick();
+    } else {
+      // Draw a single static frame for users who prefer reduced motion.
+      draw();
+    }
 
     return () => {
+      observer?.disconnect();
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseleave', handleMouseLeave);
       cancelAnimationFrame(animationFrameId);

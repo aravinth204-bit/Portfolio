@@ -2,19 +2,78 @@ import { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HeroParticleVortex from './HeroParticleVortex';
+import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const techLabels = ['React 19', 'JavaScript', 'TypeScript', 'GSAP Motion', 'Three.js', 'Node.js', 'TailwindCSS'];
+const chips = [
+  { label: 'React', modifier: 'react' },
+  { label: 'JavaScript', modifier: 'js' },
+  { label: 'Tailwind CSS', modifier: 'tailwind' },
+  { label: 'HTML', modifier: 'html' },
+  { label: 'CSS', modifier: 'css' },
+];
 
-function getWords(line) {
-  return line.split(' ').map((word, index) => (
-    <span className="hero-heading-word" key={`${word}-${index}`}>
-      {Array.from(word).map((character, characterIndex) => (
-        <span className="hero-heading-char" key={`${character}-${characterIndex}`}>
-          <span className="hero-heading-char-inner">{character}</span>
-        </span>
-      ))}
+// Tokenised so the editor keeps real syntax highlighting while typing.
+const codeLines = [
+  [
+    { text: 'const ', kind: 'kw' },
+    { text: 'aravinth', kind: 'fn' },
+    { text: ' = {', kind: 'pun' },
+  ],
+  [
+    { text: '  role', kind: 'prop' },
+    { text: ': ', kind: 'pun' },
+    { text: "'Frontend Developer'", kind: 'str' },
+    { text: ',', kind: 'pun' },
+  ],
+  [
+    { text: '  stack', kind: 'prop' },
+    { text: ': [', kind: 'pun' },
+    { text: "'React'", kind: 'str' },
+    { text: ', ', kind: 'pun' },
+    { text: "'TS'", kind: 'str' },
+    { text: ', ', kind: 'pun' },
+    { text: "'Node'", kind: 'str' },
+    { text: '],', kind: 'pun' },
+  ],
+  [
+    { text: '  motion', kind: 'prop' },
+    { text: ': ', kind: 'pun' },
+    { text: "'gsap'", kind: 'str' },
+    { text: ',', kind: 'pun' },
+  ],
+  [
+    { text: '  focus', kind: 'prop' },
+    { text: ': ', kind: 'pun' },
+    { text: "'detail & polish'", kind: 'str' },
+    { text: ',', kind: 'pun' },
+  ],
+  [{ text: '};', kind: 'pun' }],
+  [{ text: '', kind: 'pun' }],
+  [
+    { text: 'const ', kind: 'kw' },
+    { text: 'build', kind: 'fn' },
+    { text: ' = (idea) =>', kind: 'pun' },
+  ],
+  [{ text: '  idea', kind: 'prop' }],
+  [
+    { text: '    .design(', kind: 'fn' },
+    { text: "'pixel'", kind: 'str' },
+    { text: ')', kind: 'pun' },
+  ],
+  [
+    { text: '    .motion(', kind: 'fn' },
+    { text: "'smooth'", kind: 'str' },
+    { text: ')', kind: 'pun' },
+  ],
+  [{ text: '    .ship();', kind: 'fn' }],
+];
+
+function renderNameChars(text) {
+  return Array.from(text).map((character, index) => (
+    <span className="hero-name-char" key={`${character}-${index}`}>
+      {character}
     </span>
   ));
 }
@@ -26,66 +85,95 @@ export default function Hero({ introReady }) {
     const root = heroRef.current;
     if (!root) return undefined;
 
-    const characters = root.querySelectorAll('.hero-heading-char-inner');
-    const description = root.querySelector('.hero-description');
-    const actions = root.querySelector('.hero-actions');
-    const tech = root.querySelector('.hero-tech');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // 1. Set initial hidden transform immediately on mount
-    gsap.set(characters, { 
-      autoAlpha: 0, 
-      yPercent: 125, 
-      rotateX: -25,
-      transformOrigin: '50% 100%' 
-    });
-    gsap.set(description, { autoAlpha: 0, y: 16 });
-    gsap.set(actions, { autoAlpha: 0, y: 14 });
-    gsap.set(tech, { autoAlpha: 0, y: 12 });
+    const context = gsap.context(() => {
+      const nameChars = root.querySelectorAll('.hero-name-char');
+      const reveals = root.querySelectorAll('[data-hero-reveal]');
+      const shell = root.querySelector('.hero-editor-shell');
+      const codeChars = root.querySelectorAll('.code-char');
+      const lineNumbers = root.querySelectorAll('.code-line-number');
+      const caret = root.querySelector('.code-caret');
+      const editor = root.querySelector('.hero-editor');
 
-    // 2. Play sequence as soon as curtain finishes
-    if (!introReady) return undefined;
+      // Reduced motion: everything stays visible, nothing animates.
+      if (reducedMotion) return;
 
-    const timeline = gsap.timeline({
-      defaults: { ease: 'power3.out' },
-    });
+      // Hide the composition before the intro curtain lifts to avoid a flash.
+      gsap.set(nameChars, {
+        autoAlpha: 0,
+        yPercent: 115,
+        rotateX: -35,
+        transformOrigin: '50% 100%',
+      });
+      gsap.set(reveals, { autoAlpha: 0, y: 16 });
+      gsap.set(shell, { autoAlpha: 0, y: 34, rotateY: -9, scale: 0.97 });
+      gsap.set(lineNumbers, { autoAlpha: 0 });
+      gsap.set(codeChars, { autoAlpha: 0 });
+      gsap.set(caret, { autoAlpha: 0 });
 
-    timeline
-      .to(characters, {
-        autoAlpha: 1,
-        yPercent: 0,
-        rotateX: 0,
-        duration: 0.95,
-        stagger: 0.022,
-        ease: 'power4.out',
-      })
-      .to(description, { autoAlpha: 1, y: 0, duration: 0.52 }, '-=0.35')
-      .to(actions, { autoAlpha: 1, y: 0, duration: 0.48 }, '-=0.25')
-      .to(tech, { autoAlpha: 1, y: 0, duration: 0.46 }, '-=0.22');
+      if (!introReady) return;
 
-    const isDesktop = window.matchMedia('(min-width: 801px)').matches;
-    if (isDesktop) {
-      gsap.to(root.querySelector('.hero-glow'), {
-        x: 20,
-        duration: 12,
+      const intro = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      intro
+        .to(
+          nameChars,
+          {
+            autoAlpha: 1,
+            yPercent: 0,
+            rotateX: 0,
+            duration: 0.85,
+            stagger: 0.03,
+            ease: 'power4.out',
+          },
+          0.08,
+        )
+        .to(reveals, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.075 }, 0.3)
+        .to(
+          shell,
+          {
+            autoAlpha: 1,
+            y: 0,
+            rotateY: 0,
+            scale: 1,
+            duration: 1,
+            ease: 'power3.out',
+          },
+          0.42,
+        )
+        .to(lineNumbers, { autoAlpha: 1, duration: 0.3, stagger: 0.025 }, 0.95)
+        .to(
+          codeChars,
+          { autoAlpha: 1, duration: 0.04, stagger: 0.0055, ease: 'none' },
+          1.02,
+        )
+        .to(caret, { autoAlpha: 1, duration: 0.2 }, '>-0.1');
+
+      gsap.to(editor, {
+        y: -10,
+        duration: 5.5,
+        delay: 1.9,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut',
       });
-      gsap.to(root.querySelector('.hero-copy'), {
-        yPercent: -10,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.65,
-        },
-      });
-    }
 
-    return () => {
-      timeline.kill();
-    };
+      if (window.matchMedia('(min-width: 1081px)').matches) {
+        gsap.to(root.querySelector('.hero-copy'), {
+          yPercent: -6,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: root,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.65,
+          },
+        });
+      }
+    }, root);
+
+    return () => context.revert();
   }, [introReady]);
 
   const scrollTo = (id) => {
@@ -100,290 +188,180 @@ export default function Hero({ introReady }) {
 
   return (
     <section id="home" className="hero-section" ref={heroRef} data-motion-section>
-      {/* Ultimate Hybrid: Gravitational Vortex + Comet Sparks Trail */}
       <HeroParticleVortex />
 
       <div className="hero-atmosphere" aria-hidden="true">
         <div className="hero-glow" />
+        <div className="hero-glow hero-glow--soft" />
+        <div className="hero-beam" />
         <div className="hero-grid" />
+        <div className="hero-vignette" />
       </div>
 
       <div className="container hero-container">
-        <div className="hero-centered-layout">
+        <div className="hero-layout">
           <div className="hero-copy">
-            <h1 className="hero-heading" aria-label="Aravinth S. Creative Developer crafting digital experiences.">
-              <span className="hero-heading-line" aria-hidden="true">
-                {getWords("Aravinth S.")}
-              </span>
-              <span className="hero-heading-line" aria-hidden="true">
-                {getWords("Creative Developer crafting digital experiences.")}
+            <p className="hero-availability" data-hero-reveal>
+              <span className="hero-status-dot" aria-hidden="true" />
+              Available for opportunities
+            </p>
+
+            <p className="hero-greeting" data-hero-reveal>
+              Hi, I&apos;m
+            </p>
+
+            <h1 className="hero-name" aria-label="Aravinth S.">
+              <span aria-hidden="true">
+                <span className="hero-name-word">{renderNameChars('ARAVINTH')}</span>{' '}
+                <span className="hero-name-word">
+                  S<span className="hero-name-char hero-name-dot">.</span>
+                </span>
               </span>
             </h1>
 
-            <p className="hero-description hero-reveal">
-              Frontend Engineer specializing in interactive, motion-rich, and high-performance web applications with modern design aesthetics.
+            <p className="hero-role" data-hero-reveal>
+              Frontend <span className="accent-serif">Developer</span>
+              <span className="hero-role-dot">.</span>
             </p>
 
-            <div className="hero-actions hero-reveal">
-              <button className="btn btn-primary" type="button" data-magnetic onClick={() => scrollTo('projects')}>
-                Explore selected work
-                <span aria-hidden="true">&darr;</span>
-              </button>
-              <a 
-                className="btn btn-secondary" 
-                href="/resume.pdf" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+            <p className="hero-intro" data-hero-reveal>
+              I build fast, accessible interfaces with <strong>React</strong> — turning product
+              ideas into polished, motion-driven experiences that feel effortless.
+            </p>
+
+            <div className="hero-actions" data-hero-reveal>
+              <button
+                className="btn btn-primary"
+                type="button"
                 data-magnetic
+                onClick={() => scrollTo('projects')}
               >
-                View Resume
-                <span aria-hidden="true">&nearr;</span>
-              </a>
-              <button className="btn btn-secondary" type="button" data-magnetic onClick={() => scrollTo('contact')}>
-                Get in touch
+                Explore my work
+                <span aria-hidden="true">↓</span>
+              </button>
+              <button
+                className="btn btn-secondary"
+                type="button"
+                data-magnetic
+                onClick={() => scrollTo('contact')}
+              >
+                Let&apos;s connect
+                <span aria-hidden="true">↗</span>
               </button>
             </div>
 
-            <div className="hero-tech hero-reveal" aria-label="Technology stack">
-              <span>Core Stack</span>
-              <div>
-                {techLabels.map((label) => (
-                  <p key={label}>{label}</p>
-                ))}
+            {/*
+              TODO: Place your real resume at public/resume.pdf (exact lowercase name)
+              so this link resolves in production. The file is intentionally not committed.
+            */}
+            <a
+              className="hero-resume"
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-hero-reveal
+            >
+              Résumé <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <div className="hero-visual" aria-hidden="true">
+            <div className="hero-visual-glow" />
+
+            <div className="hero-editor-shell">
+              {chips.slice(0, 5).map((chip) => (
+                <span className={`hero-chip hero-chip--${chip.modifier}`} key={chip.label}>
+                  <span className="hero-chip-inner">
+                    <span className="hero-chip-dot" />
+                    {chip.label}
+                  </span>
+                </span>
+              ))}
+
+              <div className="hero-editor">
+                <div className="hero-editor-bar">
+                  <span className="hero-editor-dots">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                  <span className="hero-editor-file">
+                    <em>~/</em>hero.tsx
+                  </span>
+                  <span className="hero-editor-live">live</span>
+                </div>
+
+                <div className="hero-code">
+                  {codeLines.map((line, lineIndex) => (
+                    <div className="code-line" key={`line-${lineIndex}`}>
+                      <span className="code-line-number">
+                        {String(lineIndex + 1).padStart(2, '0')}
+                      </span>
+                      <span className="code-line-content">
+                        {line.map((token, tokenIndex) => (
+                          <span className={`code-token code-${token.kind}`} key={`t-${tokenIndex}`}>
+                            {Array.from(token.text).map((character, characterIndex) => (
+                              <span className="code-char" key={`c-${characterIndex}`}>
+                                {character}
+                              </span>
+                            ))}
+                          </span>
+                        ))}
+                        {lineIndex === codeLines.length - 1 && <span className="code-caret" />}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="hero-editor-status">
+                  <span>main*</span>
+                  <span className="status-ok">Build passing</span>
+                </div>
               </div>
+
+              <div className="hero-float-card hero-float-card--build">
+                <span className="hero-float-icon">&#10003;</span>
+                <span className="hero-float-copy">
+                  <strong>Deployed</strong>
+                  <small>vercel · 1.2s</small>
+                </span>
+              </div>
+
+              <div className="hero-float-card hero-float-card--fps">
+                <span className="hero-fps-bars">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                <span className="hero-float-copy">
+                  <strong>60 fps</strong>
+                  <small>smooth motion</small>
+                </span>
+              </div>
+            </div>
+
+            <div className="hero-chip-row">
+              {chips.map((chip) => (
+                <span key={`row-${chip.label}`}>{chip.label}</span>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      <a className="hero-scroll" href="#services" onClick={(event) => {
-        event.preventDefault();
-        scrollTo('services');
-      }}>
+      <a
+        className="hero-scroll"
+        href="#services"
+        onClick={(event) => {
+          event.preventDefault();
+          scrollTo('services');
+        }}
+      >
         <span>Scroll</span>
-        <span aria-hidden="true" />
+        <span className="hero-scroll-track">
+          <span />
+        </span>
       </a>
-
-      <style>{`
-        .hero-section {
-          position: relative;
-          min-height: 100svh;
-          overflow: hidden;
-          border-bottom: 1px solid var(--border);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .hero-atmosphere,
-        .hero-grid,
-        .hero-glow {
-          position: absolute;
-          pointer-events: none;
-        }
-
-        .hero-atmosphere {
-          inset: 0;
-          z-index: 1;
-        }
-
-        .hero-glow {
-          top: 25%;
-          left: 50%;
-          transform: translateX(-50%);
-          width: min(65vw, 900px);
-          height: min(65vw, 900px);
-          background: radial-gradient(circle, rgba(255, 113, 56, 0.12) 0, rgba(255, 113, 56, 0.03) 45%, transparent 70%);
-        }
-
-        .hero-grid {
-          inset: 0;
-          opacity: 0.12;
-          background-image:
-            linear-gradient(rgba(245, 245, 245, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(245, 245, 245, 0.04) 1px, transparent 1px);
-          background-size: 72px 72px;
-          mask-image: radial-gradient(circle at center, black 40%, transparent 85%);
-        }
-
-        .hero-container {
-          position: relative;
-          z-index: 2;
-          width: 100%;
-        }
-
-        /* Centered High-Impact Typography Layout */
-        .hero-centered-layout {
-          min-height: 100svh;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          padding-block: calc(var(--nav-height) + 2rem) 4rem;
-        }
-
-        .hero-copy {
-          max-width: 960px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin: 0 auto;
-        }
-
-        .hero-heading {
-          max-width: 960px;
-          color: var(--soft-white);
-          font-family: 'Space Grotesk', 'Manrope', sans-serif;
-          font-size: clamp(3.2rem, 6.8vw, 7.2rem);
-          font-weight: 600;
-          line-height: 0.95;
-          letter-spacing: -0.07em;
-          text-wrap: balance;
-        }
-
-        .hero-heading-line {
-          display: block;
-        }
-
-        .hero-heading-line:last-child {
-          color: var(--muted-text);
-        }
-
-        .hero-heading-word {
-          display: inline-block;
-          overflow: hidden;
-          margin-right: 0.22em;
-          padding-bottom: 0.12em;
-          margin-bottom: -0.12em;
-          vertical-align: top;
-        }
-
-        .hero-heading-char {
-          display: inline-block;
-          overflow: hidden;
-          vertical-align: top;
-        }
-
-        .hero-heading-char-inner {
-          display: inline-block;
-          transform-origin: 50% 100%;
-        }
-
-        .hero-description {
-          max-width: 660px;
-          margin-top: clamp(1.8rem, 3.5vh, 2.5rem);
-          color: var(--text-secondary);
-          font-size: clamp(1.05rem, 1.4vw, 1.25rem);
-          line-height: 1.75;
-          text-wrap: pretty;
-        }
-
-        .hero-actions {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 1rem;
-          margin-top: 2.4rem;
-        }
-
-        .hero-actions .btn {
-          min-width: 175px;
-        }
-
-        .hero-tech {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 0.75rem;
-          margin-top: clamp(2.5rem, 5vh, 4rem);
-          color: var(--muted-text);
-          font-size: 0.78rem;
-          font-weight: 700;
-        }
-
-        .hero-tech > span {
-          color: var(--accent);
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          font-size: 0.7rem;
-        }
-
-        .hero-tech > div {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 0.5rem 1.2rem;
-        }
-
-        .hero-tech p {
-          position: relative;
-        }
-
-        .hero-tech p:not(:last-child)::after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          right: -0.65rem;
-          width: 3px;
-          height: 3px;
-          border-radius: 50%;
-          background: var(--accent);
-        }
-
-        .hero-scroll {
-          position: absolute;
-          z-index: 2;
-          right: 2.25rem;
-          bottom: 2.25rem;
-          display: flex;
-          align-items: center;
-          gap: 0.7rem;
-          color: var(--muted-text);
-          font-size: 0.68rem;
-          font-weight: 800;
-          transform: rotate(90deg) translateX(-100%);
-          transform-origin: right bottom;
-        }
-
-        .hero-scroll > span:last-child {
-          width: 42px;
-          height: 1px;
-          background: var(--accent);
-        }
-
-        @media (max-width: 900px) {
-          .hero-section {
-            min-height: auto;
-          }
-
-          .hero-centered-layout {
-            min-height: auto;
-            padding-block: calc(var(--nav-height) + 3.5rem) 4rem;
-          }
-
-          .hero-scroll {
-            display: none;
-          }
-        }
-
-        @media (max-width: 600px) {
-          .hero-heading {
-            font-size: clamp(2.5rem, 12vw, 4rem);
-            line-height: 0.98;
-          }
-
-          .hero-actions {
-            flex-direction: column;
-            width: 100%;
-            max-width: 320px;
-          }
-
-          .hero-actions .btn {
-            width: 100%;
-          }
-        }
-      `}</style>
     </section>
   );
 }

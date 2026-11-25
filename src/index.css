@@ -18,6 +18,20 @@
   --accent-dark: #D94E1C;
   --accent-light: rgba(255, 113, 56, 0.10);
 
+  /* Typography */
+  --font-display: 'Bricolage Grotesque', 'Manrope', sans-serif;
+  --font-accent: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Manrope', sans-serif;
+
+  /* Type scale — display headings keep their existing responsive ramp */
+  --text-h1: clamp(3.2rem, 6.8vw, 7.2rem);
+  --text-h2: clamp(2.7rem, 5.7vw, 5rem);
+  --text-h3: clamp(2.35rem, 4.2vw, 3.8rem);
+  --text-h4: clamp(2rem, 4vw, 3.2rem);
+  --text-sm: clamp(0.875rem, 0.85rem + 0.15vw, 0.95rem);
+  --text-base: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --text-lg: clamp(1.15rem, 1.02rem + 0.6vw, 1.5rem);
+
   --container: 1180px;
   --nav-height: 76px;
   --section-space: clamp(5.5rem, 9vw, 8.5rem);
@@ -54,7 +68,7 @@ body {
     radial-gradient(circle at 82% 8%, rgba(255, 113, 56, 0.055), transparent 24rem),
     var(--bg);
   color: var(--text-primary);
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -64,7 +78,7 @@ body,
 button,
 input,
 textarea {
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-body);
 }
 
 a {
@@ -144,11 +158,18 @@ ul {
 .section-heading {
   margin-bottom: 0.75rem;
   color: var(--text-primary);
-  font-family: 'Space Grotesk', 'Manrope', sans-serif;
-  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-family: var(--font-display);
+  font-size: var(--text-h4);
   font-weight: 700;
   line-height: 1.05;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.055em;
+}
+
+/* Italic serif accent for a single word inside a heading */
+.accent-serif {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
 }
 
 .section-sub {

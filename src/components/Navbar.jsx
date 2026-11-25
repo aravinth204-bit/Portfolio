@@ -246,7 +246,7 @@ export default function Navbar() {
 
         .brand {
           color: var(--soft-white);
-          font-family: 'Space Grotesk', 'Manrope', sans-serif;
+          font-family: var(--font-display);
           font-size: 1.05rem;
           font-weight: 700;
           letter-spacing: -0.04em;
@@ -381,7 +381,7 @@ export default function Navbar() {
             border-bottom: 1px solid var(--border);
             padding: 1rem 0;
             color: var(--muted-text);
-            font-family: 'Space Grotesk', 'Manrope', sans-serif;
+            font-family: var(--font-display);
             font-size: clamp(1.8rem, 9vw, 2.8rem);
             font-weight: 600;
             letter-spacing: -0.05em;

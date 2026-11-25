@@ -9,6 +9,7 @@ const projects = [
   {
     id: 'gym',
     screenshot: '/gym.webp',
+    imageAlt: 'Screenshot of the Gym Website landing page',
     title: 'Gym Website',
     tagline: 'Fitness Brand Landing Page',
     desc: 'A bold, high-energy landing page for a modern gym brand. Built to inspire action with dynamic hero sections, class schedules, trainer profiles, and compelling CTAs.',
@@ -21,6 +22,7 @@ const projects = [
   {
     id: 'chicken',
     screenshot: '/chicken.webp',
+    imageAlt: 'Screenshot of the Chicken Sea e-commerce storefront',
     title: 'Chicken Sea',
     tagline: 'E-Commerce Meat Delivery Platform',
     desc: "Premium poultry and fresh meat delivery platform serving Erode. A full e-commerce experience with product listings, cart management, checkout, and order tracking.",
@@ -33,6 +35,7 @@ const projects = [
   {
     id: 'cricket',
     screenshot: '/cricket.webp',
+    imageAlt: 'Screenshot of the Active 11s cricket scoring app',
     title: 'Active 11s',
     tagline: 'Real-Time Cricket Scoring PWA',
     desc: 'A Progressive Web App for tracking live cricket scores for small-scale matches. Features offline support via Service Workers and real-time score syncing.',
@@ -45,6 +48,7 @@ const projects = [
   {
     id: 'grocery',
     screenshot: '/grocery.webp',
+    imageAlt: 'Screenshot of the Grocery App shopping platform',
     title: 'Grocery App',
     tagline: 'Full-Stack Grocery Shopping Platform',
     desc: 'A complete full-stack grocery shopping app with product browsing, smart search, cart management, user authentication, and an admin dashboard for inventory management.',
@@ -183,7 +187,7 @@ export default function Projects() {
                     <img
                       className="project-preview-image"
                       src={project.screenshot}
-                      alt=""
+                      alt={project.imageAlt}
                       width="1024"
                       height="1024"
                       loading="lazy"

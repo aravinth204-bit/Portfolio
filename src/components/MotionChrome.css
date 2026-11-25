@@ -15,7 +15,7 @@
 }
 
 .intro-mark {
-  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(1.15rem, 2vw, 1.5rem);
   font-weight: 700;
   letter-spacing: -0.045em;
