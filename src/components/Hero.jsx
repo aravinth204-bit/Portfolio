@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HeroParticleVortex from './HeroParticleVortex';
+import HeroCharacterSequence from './HeroCharacterSequence';
 import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -206,145 +207,43 @@ export default function Hero({ introReady }) {
               Available for opportunities
             </p>
 
-            <p className="hero-greeting" data-hero-reveal>
-              Hi, I&apos;m
-            </p>
-
-            <h1 className="hero-name" aria-label="Aravinth S.">
-              <span aria-hidden="true">
-                <span className="hero-name-word">{renderNameChars('ARAVINTH')}</span>{' '}
-                <span className="hero-name-word">
-                  S<span className="hero-name-char hero-name-dot">.</span>
-                </span>
-              </span>
+            <h1 className="hero-name" aria-label="Hi, I'm Aravinth S.">
+              <span className="hero-name-white">Hi, I&apos;m </span>
+              <span className="hero-name-orange">Aravinth S.</span>
             </h1>
 
             <p className="hero-role" data-hero-reveal>
-              Frontend <span className="accent-serif">Developer</span>
-              <span className="hero-role-dot">.</span>
+              Web <span className="hero-role-ai">Developer</span>
             </p>
 
             <p className="hero-intro" data-hero-reveal>
-              I build fast, accessible interfaces with <strong>React</strong> — turning product
-              ideas into polished, motion-driven experiences that feel effortless.
+              Crafting fast, modern, and motion-rich web experiences with React &amp; AI.
             </p>
 
             <div className="hero-actions" data-hero-reveal>
               <button
-                className="btn btn-primary"
+                className="btn btn-primary hero-cv-pill"
                 type="button"
                 data-magnetic
                 onClick={() => scrollTo('projects')}
               >
-                Explore my work
-                <span aria-hidden="true">↓</span>
+                Explore My Work
+                <span aria-hidden="true">&darr;</span>
               </button>
               <button
-                className="btn btn-secondary"
+                className="hero-more-btn"
                 type="button"
                 data-magnetic
                 onClick={() => scrollTo('contact')}
               >
-                Let&apos;s connect
-                <span aria-hidden="true">↗</span>
+                <span className="hero-play-circle" aria-hidden="true">&nearr;</span>
+                <span>Let&apos;s Connect</span>
               </button>
             </div>
-
-            {/*
-              TODO: Place your real resume at public/resume.pdf (exact lowercase name)
-              so this link resolves in production. The file is intentionally not committed.
-            */}
-            <a
-              className="hero-resume"
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-hero-reveal
-            >
-              Résumé <span aria-hidden="true">↗</span>
-            </a>
           </div>
 
-          <div className="hero-visual" aria-hidden="true">
-            <div className="hero-visual-glow" />
-
-            <div className="hero-editor-shell">
-              {chips.slice(0, 5).map((chip) => (
-                <span className={`hero-chip hero-chip--${chip.modifier}`} key={chip.label}>
-                  <span className="hero-chip-inner">
-                    <span className="hero-chip-dot" />
-                    {chip.label}
-                  </span>
-                </span>
-              ))}
-
-              <div className="hero-editor">
-                <div className="hero-editor-bar">
-                  <span className="hero-editor-dots">
-                    <span />
-                    <span />
-                    <span />
-                  </span>
-                  <span className="hero-editor-file">
-                    <em>~/</em>hero.tsx
-                  </span>
-                  <span className="hero-editor-live">live</span>
-                </div>
-
-                <div className="hero-code">
-                  {codeLines.map((line, lineIndex) => (
-                    <div className="code-line" key={`line-${lineIndex}`}>
-                      <span className="code-line-number">
-                        {String(lineIndex + 1).padStart(2, '0')}
-                      </span>
-                      <span className="code-line-content">
-                        {line.map((token, tokenIndex) => (
-                          <span className={`code-token code-${token.kind}`} key={`t-${tokenIndex}`}>
-                            {Array.from(token.text).map((character, characterIndex) => (
-                              <span className="code-char" key={`c-${characterIndex}`}>
-                                {character}
-                              </span>
-                            ))}
-                          </span>
-                        ))}
-                        {lineIndex === codeLines.length - 1 && <span className="code-caret" />}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="hero-editor-status">
-                  <span>main*</span>
-                  <span className="status-ok">Build passing</span>
-                </div>
-              </div>
-
-              <div className="hero-float-card hero-float-card--build">
-                <span className="hero-float-icon">&#10003;</span>
-                <span className="hero-float-copy">
-                  <strong>Deployed</strong>
-                  <small>vercel · 1.2s</small>
-                </span>
-              </div>
-
-              <div className="hero-float-card hero-float-card--fps">
-                <span className="hero-fps-bars">
-                  <i />
-                  <i />
-                  <i />
-                </span>
-                <span className="hero-float-copy">
-                  <strong>60 fps</strong>
-                  <small>smooth motion</small>
-                </span>
-              </div>
-            </div>
-
-            <div className="hero-chip-row">
-              {chips.map((chip) => (
-                <span key={`row-${chip.label}`}>{chip.label}</span>
-              ))}
-            </div>
+          <div className="hero-visual">
+            <HeroCharacterSequence />
           </div>
         </div>
       </div>
