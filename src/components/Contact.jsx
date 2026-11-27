@@ -69,8 +69,8 @@ const contactLinks = [
     label: 'GitHub',
     value: 'github.com/aravinth204-bit',
     href: 'https://github.com/aravinth204-bit',
-    color: '#24292E',
-    bg: '#F6F8FA',
+    color: '#E6EDF3',
+    bg: '#24292E',
   },
   {
     icon: <WhatsAppIcon />,

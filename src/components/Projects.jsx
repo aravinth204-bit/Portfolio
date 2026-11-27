@@ -12,10 +12,7 @@ const projects = [
     imageAlt: 'Screenshot of the Gym Website landing page',
     title: 'Gym Website',
     tagline: 'Fitness Brand Landing Page',
-    desc: 'A bold, high-energy landing page for a modern gym brand. Built to inspire action with dynamic hero sections, class schedules, trainer profiles, and compelling CTAs.',
-    problem: 'The gym needed a digital presence that matched their high-energy brand and converted visitors into gym members.',
-    solution: 'Built a visually stunning, mobile-first landing page with animated sections, a strong CTA hierarchy, and persuasive copy.',
-    result: 'Professional online presence that drives memberships and builds brand credibility.',
+    desc: 'Landing page for a gym brand with class schedules, trainer profiles and clear sign-up buttons.',
     tags: ['React', 'CSS Animations', 'Responsive', 'UI/UX'],
     liveUrl: 'https://gym-website-henna-seven.vercel.app/',
   },
@@ -25,10 +22,7 @@ const projects = [
     imageAlt: 'Screenshot of the Chicken Sea e-commerce storefront',
     title: 'Chicken Sea',
     tagline: 'E-Commerce Meat Delivery Platform',
-    desc: "Premium poultry and fresh meat delivery platform serving Erode. A full e-commerce experience with product listings, cart management, checkout, and order tracking.",
-    problem: 'Local customers lacked a hygienic and fast way to order premium farm-fresh meat online.',
-    solution: 'Developed a high-performance web store with 45-minute delivery tracking, peak hygiene branding, and seamless checkout.',
-    result: 'Established as the leading fresh meat delivery platform in Erode with daily active orders.',
+    desc: 'Online meat delivery store for Erode with cart, checkout and order tracking.',
     tags: ['React', 'Node.js', 'MongoDB', 'E-Commerce', 'REST API'],
     liveUrl: 'https://local-chicken-shop-app.vercel.app/',
   },
@@ -38,10 +32,7 @@ const projects = [
     imageAlt: 'Screenshot of the Active 11s cricket scoring app',
     title: 'Active 11s',
     tagline: 'Real-Time Cricket Scoring PWA',
-    desc: 'A Progressive Web App for tracking live cricket scores for small-scale matches. Features offline support via Service Workers and real-time score syncing.',
-    problem: 'Tracking live scores for small-scale matches is difficult with low connectivity and no dedicated tools.',
-    solution: 'Built a lightweight PWA with Service Workers for offline support, real-time score syncing, and an intuitive scoring interface.',
-    result: 'Seamless scoring experience with instant updates even on patchy networks, installable on mobile devices.',
+    desc: 'Installable app for scoring local cricket matches, even on weak networks.',
     tags: ['JavaScript', 'PWA', 'Service Workers', 'Offline Support'],
     liveUrl: 'https://cricket-app-pied.vercel.app/',
   },
@@ -51,10 +42,7 @@ const projects = [
     imageAlt: 'Screenshot of the Grocery App shopping platform',
     title: 'Grocery App',
     tagline: 'Full-Stack Grocery Shopping Platform',
-    desc: 'A complete full-stack grocery shopping app with product browsing, smart search, cart management, user authentication, and an admin dashboard for inventory management.',
-    problem: 'Local grocery businesses needed a digital storefront with real-time inventory and a seamless ordering experience.',
-    solution: 'Built a full MERN stack app with JWT auth, admin dashboard, product categories, order management, and WhatsApp order notifications.',
-    result: 'A production-ready grocery platform with admin controls, customer-facing store, and live order management.',
+    desc: 'Full-stack grocery store with search, cart, login and an admin dashboard.',
     tags: ['React', 'Node.js', 'MongoDB', 'Full Stack', 'Admin Dashboard'],
     liveUrl: 'https://grocery-qcmn.vercel.app/',
   },
@@ -78,7 +66,24 @@ export default function Projects() {
       const pointerFine = conditions.pointerFine;
       const cleanupHandlers = [];
 
-      cards.forEach((card) => {
+      cards.forEach((card, index) => {
+        const nextCard = cards[index + 1];
+        if (nextCard) {
+          // Shrink and dim this card while the next one slides over it.
+          gsap.to(card.querySelector('.project-card-inner'), {
+            scale: 0.93,
+            '--stack-dim': 0.5,
+            transformOrigin: 'top center',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: nextCard,
+              start: 'top 85%',
+              end: 'top 20%',
+              scrub: true,
+            },
+          });
+        }
+
         const preview = card.querySelector('.project-preview');
         const imageFrame = card.querySelector('.project-preview-image-frame');
         const timeline = gsap.timeline({
@@ -104,7 +109,6 @@ export default function Projects() {
           .fromTo(
             [
               card.querySelector('.project-description'),
-              card.querySelector('.project-case-study'),
               card.querySelector('.project-footer'),
             ],
             { y: 12, autoAlpha: 0 },
@@ -167,15 +171,9 @@ export default function Projects() {
         </div>
 
         <div className="projects-grid">
-          {projects.map((project, index) => {
-            const isFeature = index === 0 || index === projects.length - 1;
-            const isReversed = index === projects.length - 1;
-            const layout = isFeature
-              ? `project-card project-card--feature${isReversed ? ' project-card--reverse' : ''}`
-              : 'project-card project-card--compact';
-
-            return (
-              <article className={layout} key={project.id}>
+          {projects.map((project, index) => (
+            <article className="project-card" key={project.id} style={{ '--stack-index': index }}>
+              <div className="project-card-inner">
                 <a
                   className="project-preview"
                   href={project.liveUrl}
@@ -194,7 +192,6 @@ export default function Projects() {
                       decoding="async"
                     />
                   </span>
-                  <span className="sr-only">{project.title} website preview</span>
                   <span className="project-preview-action">Open live site</span>
                 </a>
 
@@ -205,32 +202,12 @@ export default function Projects() {
                     <p className="project-description">{project.desc}</p>
                   </div>
 
-                  <dl className="project-case-study">
-                    <div>
-                      <dt>Problem</dt>
-                      <dd>{project.problem}</dd>
-                    </div>
-                    <div>
-                      <dt>Solution</dt>
-                      <dd>{project.solution}</dd>
-                    </div>
-                    <div>
-                      <dt>Result</dt>
-                      <dd>{project.result}</dd>
-                    </div>
-                  </dl>
-
                   <div className="project-footer">
                     <ul className="project-tags" aria-label={`${project.title} technologies`}>
                       {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
                     </ul>
 
-                    <a
-                      className="project-cta"
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a className="project-cta" href={project.liveUrl} target="_blank" rel="noopener noreferrer">
                       View project
                       <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
                         <path d="M4.5 10h10.75M10.5 5.25 15.25 10l-4.75 4.75" />
@@ -238,9 +215,9 @@ export default function Projects() {
                     </a>
                   </div>
                 </div>
-              </article>
-            );
-          })}
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>

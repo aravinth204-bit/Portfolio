@@ -7,70 +7,6 @@ import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const chips = [
-  { label: 'React', modifier: 'react' },
-  { label: 'JavaScript', modifier: 'js' },
-  { label: 'Tailwind CSS', modifier: 'tailwind' },
-  { label: 'HTML', modifier: 'html' },
-  { label: 'CSS', modifier: 'css' },
-];
-
-// Tokenised so the editor keeps real syntax highlighting while typing.
-const codeLines = [
-  [
-    { text: 'const ', kind: 'kw' },
-    { text: 'aravinth', kind: 'fn' },
-    { text: ' = {', kind: 'pun' },
-  ],
-  [
-    { text: '  role', kind: 'prop' },
-    { text: ': ', kind: 'pun' },
-    { text: "'Frontend Developer'", kind: 'str' },
-    { text: ',', kind: 'pun' },
-  ],
-  [
-    { text: '  stack', kind: 'prop' },
-    { text: ': [', kind: 'pun' },
-    { text: "'React'", kind: 'str' },
-    { text: ', ', kind: 'pun' },
-    { text: "'TS'", kind: 'str' },
-    { text: ', ', kind: 'pun' },
-    { text: "'Node'", kind: 'str' },
-    { text: '],', kind: 'pun' },
-  ],
-  [
-    { text: '  motion', kind: 'prop' },
-    { text: ': ', kind: 'pun' },
-    { text: "'gsap'", kind: 'str' },
-    { text: ',', kind: 'pun' },
-  ],
-  [
-    { text: '  focus', kind: 'prop' },
-    { text: ': ', kind: 'pun' },
-    { text: "'detail & polish'", kind: 'str' },
-    { text: ',', kind: 'pun' },
-  ],
-  [{ text: '};', kind: 'pun' }],
-  [{ text: '', kind: 'pun' }],
-  [
-    { text: 'const ', kind: 'kw' },
-    { text: 'build', kind: 'fn' },
-    { text: ' = (idea) =>', kind: 'pun' },
-  ],
-  [{ text: '  idea', kind: 'prop' }],
-  [
-    { text: '    .design(', kind: 'fn' },
-    { text: "'pixel'", kind: 'str' },
-    { text: ')', kind: 'pun' },
-  ],
-  [
-    { text: '    .motion(', kind: 'fn' },
-    { text: "'smooth'", kind: 'str' },
-    { text: ')', kind: 'pun' },
-  ],
-  [{ text: '    .ship();', kind: 'fn' }],
-];
-
 function renderNameChars(text) {
   return Array.from(text).map((character, index) => (
     <span className="hero-name-char" key={`${character}-${index}`}>
@@ -91,12 +27,6 @@ export default function Hero({ introReady }) {
     const context = gsap.context(() => {
       const nameChars = root.querySelectorAll('.hero-name-char');
       const reveals = root.querySelectorAll('[data-hero-reveal]');
-      const shell = root.querySelector('.hero-editor-shell');
-      const codeChars = root.querySelectorAll('.code-char');
-      const lineNumbers = root.querySelectorAll('.code-line-number');
-      const caret = root.querySelector('.code-caret');
-      const editor = root.querySelector('.hero-editor');
-
       // Reduced motion: everything stays visible, nothing animates.
       if (reducedMotion) return;
 
@@ -108,10 +38,6 @@ export default function Hero({ introReady }) {
         transformOrigin: '50% 100%',
       });
       gsap.set(reveals, { autoAlpha: 0, y: 16 });
-      gsap.set(shell, { autoAlpha: 0, y: 34, rotateY: -9, scale: 0.97 });
-      gsap.set(lineNumbers, { autoAlpha: 0 });
-      gsap.set(codeChars, { autoAlpha: 0 });
-      gsap.set(caret, { autoAlpha: 0 });
 
       if (!introReady) return;
 
@@ -130,35 +56,7 @@ export default function Hero({ introReady }) {
           },
           0.08,
         )
-        .to(reveals, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.075 }, 0.3)
-        .to(
-          shell,
-          {
-            autoAlpha: 1,
-            y: 0,
-            rotateY: 0,
-            scale: 1,
-            duration: 1,
-            ease: 'power3.out',
-          },
-          0.42,
-        )
-        .to(lineNumbers, { autoAlpha: 1, duration: 0.3, stagger: 0.025 }, 0.95)
-        .to(
-          codeChars,
-          { autoAlpha: 1, duration: 0.04, stagger: 0.0055, ease: 'none' },
-          1.02,
-        )
-        .to(caret, { autoAlpha: 1, duration: 0.2 }, '>-0.1');
-
-      gsap.to(editor, {
-        y: -10,
-        duration: 5.5,
-        delay: 1.9,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-      });
+        .to(reveals, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.075 }, 0.3);
 
       if (window.matchMedia('(min-width: 1081px)').matches) {
         gsap.to(root.querySelector('.hero-copy'), {
@@ -208,8 +106,8 @@ export default function Hero({ introReady }) {
             </p>
 
             <h1 className="hero-name" aria-label="Hi, I'm Aravinth S.">
-              <span className="hero-name-white">Hi, I&apos;m </span>
-              <span className="hero-name-orange">Aravinth S.</span>
+              <span className="hero-name-line hero-name-white" aria-hidden="true">{renderNameChars("Hi, I'm")}</span>
+              <span className="hero-name-line hero-name-orange" aria-hidden="true">{renderNameChars('Aravinth S.')}</span>
             </h1>
 
             <p className="hero-role" data-hero-reveal>
@@ -236,7 +134,7 @@ export default function Hero({ introReady }) {
                 data-magnetic
                 onClick={() => scrollTo('contact')}
               >
-                <span className="hero-play-circle" aria-hidden="true">&nearr;</span>
+                <span className="hero-play-circle" aria-hidden="true">&#8599;</span>
                 <span>Let&apos;s Connect</span>
               </button>
             </div>

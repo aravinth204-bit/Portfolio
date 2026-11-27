@@ -6,6 +6,8 @@ const capabilities = [
   'Modern UI Engineering',
 ];
 
+const tools = ['React', 'JavaScript', 'HTML5', 'CSS3', 'Tailwind CSS', 'GSAP', 'Node.js', 'MongoDB'];
+
 const secondarySkills = [
   {
     name: 'JavaScript',
@@ -61,16 +63,24 @@ export default function Skills() {
       {/* Ambient Lighting Backdrop */}
       <div className="skills-ambient-glow" aria-hidden="true" />
 
+      <div className="skills-marquee" aria-hidden="true">
+        <div className="skills-marquee-track">
+          {[0, 1].map((copy) => (
+            <ul key={copy}>
+              {[...tools, ...tools].map((tool, index) => <li key={`${tool}-${index}`}>{tool}</li>)}
+            </ul>
+          ))}
+        </div>
+      </div>
+
       <div className="container">
         <div className="skills-layout">
           {/* Left Column: Sticky Editorial Introduction */}
           <div className="skills-intro reveal">
-            <span className="section-tag">03 // Technical Toolkit</span>
-            <h2 className="section-heading skills-editorial-heading">
-              Engineered with foundational standards &amp; modern frameworks.
-            </h2>
+            <span className="section-tag">Skills</span>
+            <h2 className="section-heading skills-editorial-heading">Tools I use.</h2>
             <p className="section-sub skills-intro-description">
-              A focused frontend toolkit centered on component reusability, semantic structure, responsive layouts, and performant user interface engineering.
+              What I reach for to build fast, responsive websites and web apps.
             </p>
 
             {/* Core Capability Indicator Pills */}

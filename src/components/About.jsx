@@ -12,7 +12,7 @@ export default function About() {
           <figure className="about-portrait reveal">
             <div className="about-portrait-image">
               <img
-                src="/me.png"
+                src="/me-cutout.webp"
                 alt="Aravinth, frontend developer"
                 width="336"
                 height="336"

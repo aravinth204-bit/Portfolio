@@ -1,7 +1,7 @@
 .skills-section {
   position: relative;
   background: var(--charcoal);
-  overflow: hidden;
+  overflow: clip;
   padding-block: var(--section-space);
 }
 
@@ -349,5 +349,56 @@
   .tech-icon-wrap {
     transition: none !important;
     transform: none !important;
+  }
+}
+/* Endless tool strip */
+.skills-marquee {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  border-block: 1px solid var(--border);
+  padding-block: 1.1rem;
+}
+
+.skills-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: skills-marquee 40s linear infinite;
+}
+
+.skills-marquee ul {
+  display: flex;
+}
+
+.skills-marquee li {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding-right: 2rem;
+  color: var(--soft-white);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.5vw, 2.6rem);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.skills-marquee li::after {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  content: '';
+}
+
+@keyframes skills-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills-marquee-track {
+    animation: none;
   }
 }

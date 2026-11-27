@@ -2,20 +2,20 @@ import { useCallback, useLayoutEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './index.css';
-import './components/MotionChrome.css';
+import './MotionChrome.css';
 
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Services from './components/Services';
-import Projects from './components/Projects';
-import Skills from './components/Skills';
-import WhyMe from './components/WhyMe';
-import About from './components/About';
-import Experience from './components/Experience';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import { IntroCurtain, MotionChrome } from './components/MotionChrome';
-import MotionJourney from './components/MotionJourney';
+import Navbar from './Navbar';
+import Hero from './Hero';
+import Services from './Services';
+import Projects from './Projects';
+import Skills from './Skills';
+import WhyMe from './WhyMe';
+import About from './About';
+import Experience from './Experience';
+import Contact from './Contact';
+import Footer from './Footer';
+import { IntroCurtain, MotionChrome } from './MotionChrome';
+import MotionJourney from './MotionJourney';
 
 gsap.registerPlugin(ScrollTrigger);
 

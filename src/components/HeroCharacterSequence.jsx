@@ -70,31 +70,40 @@ export default function HeroCharacterSequence() {
           position: relative;
           z-index: 2;
           width: 100%;
-          height: 100%;
           overflow: visible;
           background: transparent;
           mix-blend-mode: lighten;
-          -webkit-mask-image: radial-gradient(ellipse 58% 68% at 50% 50%, #000 28%, transparent 82%);
-          mask-image: radial-gradient(ellipse 58% 68% at 50% 50%, #000 28%, transparent 82%);
         }
 
         .char-sequence-img {
           width: 100%;
-          height: 100%;
+          height: auto;
+          aspect-ratio: 3 / 2;
           display: block;
           object-fit: contain;
-          object-position: center center;
+          -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+          mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+          transform: scale(1.3);
+        }
+
+        @media (min-width: 1081px) {
+          .char-sequence-img {
+            transform: scale(1.5);
+          }
         }
 
         @media (max-width: 1050px) {
           .hero-char-stage {
-            height: 460px;
+            height: 340px;
           }
         }
 
         @media (max-width: 600px) {
           .hero-char-stage {
-            height: 360px;
+            height: 270px;
+          }
+          .char-sequence-img {
+            transform: scale(1.15) translateX(-4%);
           }
         }
       `}</style>
