@@ -86,6 +86,12 @@ export default function HeroCharacterSequence() {
           transform: scale(1.3);
         }
 
+        @media (min-width: 1081px) {
+          .char-sequence-img {
+            transform: scale(1.5);
+          }
+        }
+
         @media (max-width: 1050px) {
           .hero-char-stage {
             height: 340px;
