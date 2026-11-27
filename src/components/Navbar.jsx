@@ -347,12 +347,16 @@ export default function Navbar() {
           }
 
           .mobile-navigation {
-            position: fixed;
+            position: absolute;
             z-index: 1;
-            inset: var(--nav-height) 0 0;
+            top: var(--nav-height);
+            right: 0;
+            left: 0;
+            height: calc(100dvh - var(--nav-height));
+            overflow-y: auto;
             display: block;
             visibility: hidden;
-            background: rgba(9, 10, 13, 0.98);
+            background: #090a0d;
             opacity: 0;
             transition:
               opacity var(--transition),
@@ -368,7 +372,7 @@ export default function Navbar() {
             display: flex;
             width: calc(100% - 2rem);
             max-width: 1180px;
-            height: 100%;
+            min-height: 100%;
             margin-inline: auto;
             flex-direction: column;
             align-items: flex-start;
