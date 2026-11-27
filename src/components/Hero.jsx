@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HeroParticleVortex from './HeroParticleVortex';
@@ -6,6 +6,14 @@ import HeroCharacterSequence from './HeroCharacterSequence';
 import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const ROLES = [
+  ['Web', 'Developer'],
+  ['Motion', 'Designer'],
+  ['AI', 'Creator'],
+  ['UI', 'Engineer'],
+];
+const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 function renderNameChars(text) {
   return Array.from(text).map((character, index) => (
@@ -17,6 +25,57 @@ function renderNameChars(text) {
 
 export default function Hero({ introReady }) {
   const heroRef = useRef(null);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [displayRole, setDisplayRole] = useState(ROLES[0]);
+
+  useEffect(() => {
+    if (!introReady) return undefined;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const cycleTimer = window.setInterval(() => {
+      setRoleIndex((prev) => (prev + 1) % ROLES.length);
+    }, 3200);
+
+    return () => window.clearInterval(cycleTimer);
+  }, [introReady]);
+
+  useEffect(() => {
+    const target = ROLES[roleIndex];
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      setDisplayRole(target);
+      return undefined;
+    }
+
+    const fullTarget = `${target[0]} ${target[1]}`;
+    const totalFrames = 18;
+    let frame = 0;
+
+    const scrambleTimer = window.setInterval(() => {
+      frame += 1;
+      const progress = frame / totalFrames;
+      const resolvedCount = Math.floor(progress * fullTarget.length);
+
+      const scrambled = fullTarget
+        .split('')
+        .map((char, idx) => {
+          if (char === ' ') return ' ';
+          if (idx < resolvedCount) return char;
+          return SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+        })
+        .join('');
+
+      const splitIdx = target[0].length;
+      setDisplayRole([scrambled.slice(0, splitIdx), scrambled.slice(splitIdx + 1)]);
+
+      if (frame >= totalFrames) {
+        window.clearInterval(scrambleTimer);
+        setDisplayRole(target);
+      }
+    }, 28);
+
+    return () => window.clearInterval(scrambleTimer);
+  }, [roleIndex]);
 
   useLayoutEffect(() => {
     const root = heroRef.current;
@@ -27,6 +86,7 @@ export default function Hero({ introReady }) {
     const context = gsap.context(() => {
       const nameChars = root.querySelectorAll('.hero-name-char');
       const reveals = root.querySelectorAll('[data-hero-reveal]');
+      const visual = root.querySelector('.hero-visual');
       // Reduced motion: everything stays visible, nothing animates.
       if (reducedMotion) return;
 
@@ -36,12 +96,33 @@ export default function Hero({ introReady }) {
         yPercent: 115,
         rotateX: -35,
         transformOrigin: '50% 100%',
+        willChange: 'transform, opacity',
       });
       gsap.set(reveals, { autoAlpha: 0, y: 16 });
 
+      if (visual) {
+        gsap.set(visual, {
+          autoAlpha: 0,
+          y: 70,
+          scale: 0.94,
+          filter: 'blur(12px)',
+          transformOrigin: '50% 55%',
+          willChange: 'transform, opacity, filter',
+        });
+      }
+
       if (!introReady) return;
 
-      const intro = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      const intro = gsap.timeline({
+        defaults: { ease: 'power3.out' },
+        onComplete: () => {
+          gsap.set(nameChars, { willChange: 'auto' });
+          if (visual) {
+            gsap.set(visual, { willChange: 'auto' });
+            visual.style.filter = '';
+          }
+        },
+      });
 
       intro
         .to(
@@ -56,7 +137,19 @@ export default function Hero({ introReady }) {
           },
           0.08,
         )
-        .to(reveals, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.075 }, 0.3);
+        .to(reveals, { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.075 }, 0.3)
+        .to(
+          visual,
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 1.15,
+            ease: 'power4.out',
+          },
+          0.28,
+        );
 
       if (window.matchMedia('(min-width: 1081px)').matches) {
         gsap.to(root.querySelector('.hero-copy'), {
@@ -69,6 +162,18 @@ export default function Hero({ introReady }) {
             scrub: 0.65,
           },
         });
+        if (visual) {
+          gsap.to(visual, {
+            yPercent: 8,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: root,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 0.65,
+            },
+          });
+        }
       }
     }, root);
 
@@ -110,8 +215,8 @@ export default function Hero({ introReady }) {
               <span className="hero-name-line hero-name-orange" aria-hidden="true">{renderNameChars('Aravinth S.')}</span>
             </h1>
 
-            <p className="hero-role" data-hero-reveal>
-              Web <span className="hero-role-ai">Developer</span>
+            <p className="hero-role" data-hero-reveal aria-live="polite">
+              {displayRole[0]} <span className="hero-role-ai">{displayRole[1]}</span>
             </p>
 
             <p className="hero-intro" data-hero-reveal>
