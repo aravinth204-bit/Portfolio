@@ -59,6 +59,9 @@ export default function About() {
                 <path d="m12 5 7 7-7 7" />
               </svg>
             </a>
+            <a className="about-resume" href="/resume.pdf" download="Aravinth-S-Resume.pdf">
+              Download resume ↓
+            </a>
           </div>
         </div>
       </div>

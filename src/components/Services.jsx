@@ -2,19 +2,19 @@ import './Services.css';
 
 const capabilities = [
   {
-    title: 'Frontend Architecture & Engineering',
-    description: 'Clean, scalable, and type-safe user interfaces built with React 19, Vite, and modern JavaScript, with obsessive attention to 60 FPS performance and accessibility.',
-    focus: 'React 19, TypeScript, Vite, Component Systems',
+    title: 'Websites & Landing Pages',
+    description: 'Responsive pages that look right on phones and desktops, with clean layouts and smooth animation.',
+    focus: 'React, JavaScript, HTML5, CSS3, Tailwind CSS',
   },
   {
-    title: 'Creative Motion & Interactive Experiences',
-    description: 'Awwwards-grade kinetic web animations, micro-interactions, and 3D WebGL scenes using GSAP ScrollTrigger and Three.js.',
-    focus: 'GSAP Motion, Three.js, Canvas Physics, Kinetic Typography',
+    title: 'Web Apps & Admin Dashboards',
+    description: 'Booking, customer and management screens with forms and create, edit and delete workflows.',
+    focus: 'React Components, Hooks, State, CRUD',
   },
   {
-    title: 'Full-Stack & Web Performance',
-    description: 'End-to-end full stack integration, RESTful APIs with Node.js & MongoDB, secure authentication, and rigorous core web vital optimization.',
-    focus: 'Node.js, Express, MongoDB, REST APIs, Lighthouse 95+',
+    title: 'API Integration & UI Fixes',
+    description: 'Connecting your interface to REST APIs, debugging issues and improving usability and accessibility.',
+    focus: 'REST APIs, Supabase, Debugging, UI Testing',
   },
 ];
 
@@ -25,10 +25,10 @@ export default function Services() {
       <div className="container">
         <div className="services-layout">
           <div className="services-intro reveal">
-            <span className="section-tag">Core Capabilities</span>
-            <h2 className="section-heading">Engineering &amp; Architecture.</h2>
+            <span className="section-tag">Services</span>
+            <h2 className="section-heading">What I can build for you.</h2>
             <p className="section-sub">
-              Crafting robust, high-performance web products — from creative motion to rock-solid full-stack code.
+              Websites and web apps, from the first screen to the final fixes.
             </p>
           </div>
 

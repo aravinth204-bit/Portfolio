@@ -163,10 +163,10 @@ export default function Projects() {
         <div className="projects-intro reveal">
           <div className="projects-intro-copy">
             <span className="section-tag">Selected work</span>
-            <h2 className="section-heading">Built for the real world.</h2>
+            <h2 className="section-heading">Things I’ve built.</h2>
           </div>
           <p className="section-sub">
-            Real-world projects built for clients — each solving a specific business problem.
+            A few things I’ve built. Open any one to try it live.
           </p>
         </div>
 

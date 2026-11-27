@@ -6,7 +6,7 @@ const capabilities = [
   'Modern UI Engineering',
 ];
 
-const tools = ['React', 'JavaScript', 'HTML5', 'CSS3', 'Tailwind CSS', 'GSAP', 'Node.js', 'MongoDB'];
+const tools = ['React', 'JavaScript', 'HTML5', 'CSS3', 'Tailwind CSS', 'GSAP', 'Supabase', 'Git'];
 
 const secondarySkills = [
   {

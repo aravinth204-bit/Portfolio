@@ -156,3 +156,23 @@
     transition: none;
   }
 }
+
+.about-resume {
+  display: inline-block;
+  margin: 0.9rem 0 0 1.25rem;
+  border-bottom: 1px solid var(--accent);
+  color: var(--soft-white);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.about-resume:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 480px) {
+  .about-resume {
+    display: table;
+    margin-left: 0;
+  }
+}
